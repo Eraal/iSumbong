@@ -1,0 +1,122 @@
+<?php
+
+$client_id = "YOUR_CLIENT_ID";
+$secret_key = "YOUR_SECRET_KEY";
+$api_url = "https://api.shuftipro.com/"; // Use /sandbox/ for testing
+
+$addressValue = "";
+$addressBorder = "";
+$statusMessage = "";
+
+if (isset($_POST['btn_verify']) && isset($_FILES['id_image'])) {
+    $uploadDir = "uploads/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    $fileName = basename($_FILES["id_image"]["name"]);
+    $targetFile = $uploadDir . $fileName;
+
+    if (move_uploaded_file($_FILES["id_image"]["tmp_name"], $targetFile)) {
+        // Convert image to base64
+        $file_data = base64_encode(file_get_contents($targetFile));
+
+        $reference = uniqid("ref_");
+
+        // ShuftiPro request payload
+        $payload = [
+            "reference" => $reference,
+            "country" => "PH",
+            "language" => "EN",
+            "verification_mode" => "any",
+            "document" => [
+                "proof" => [
+                    "front" => $file_data
+                ],
+                "fetch_address" => "1" // Ask ShuftiPro to extract address
+            ]
+        ];
+
+        // API request
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $api_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, $client_id . ":" . $secret_key);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $result = json_decode($response, true);
+
+        if (isset($result['event']) && $result['event'] === "verification.accepted") {
+            // Extract address if available
+            if (isset($result['verification_result']['document']['address'])) {
+                $addressValue = $result['verification_result']['document']['address'];
+
+                // Example check for Siniloan, Laguna
+                if (stripos($addressValue, "Siniloan, Laguna") !== false) {
+                    $addressBorder = "border:2px solid green;";
+                    $statusMessage = "✅ Valid ID. Address from Siniloan, Laguna.";
+                } else {
+                    $addressBorder = "border:2px solid red;";
+                    $statusMessage = "⚠️ Valid ID but not from Siniloan, Laguna.";
+                }
+            } else {
+                $statusMessage = "⚠️ Valid ID but no address found.";
+            }
+        } else {
+            $statusMessage = "❌ Invalid or fake ID.";
+            $addressBorder = "border:2px solid red;";
+        }
+    } else {
+        $statusMessage = "File upload failed.";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="id_image">Upload ID</label>
+            <input type="file" name="id_image" id="id_image" accept="image/*" required>
+            <button type="submit" name="btn_verify" class="btn btn-secondary">Verify</button>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address"
+                value="<?php echo htmlspecialchars($addressValue); ?>"
+                readonly style="<?php echo $addressBorder; ?>">
+        </div>
+    </form>
+
+    <?php if (!empty($statusMessage)): ?>
+        <div class="result">
+            <?php echo $statusMessage; ?>
+        </div>
+    <?php endif; ?>
+</body>
+
+</html>

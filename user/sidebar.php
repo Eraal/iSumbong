@@ -1,0 +1,1 @@
+<!-- Sidebar functionality moved to top navigation (nav.php) -->
