@@ -19,11 +19,11 @@ if(isset($_POST['submit']))
     // If password is provided, hash it; otherwise keep current password
     if (!empty($password)) {
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "UPDATE users SET email = ?, name = ?, password = ? WHERE user_id = ?";
+    $sql = "UPDATE admin SET email = ?, name = ?, password = ? WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssi", $email, $name, $password_hash, $session_user_id);
     } else {
-        $sql = "UPDATE users SET email = ?, name = ? WHERE user_id = ?";
+    $sql = "UPDATE admin SET email = ?, name = ? WHERE user_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $email, $name, $session_user_id);
     }
@@ -59,7 +59,7 @@ if(isset($_POST['submit']))
 }
 
 // Get user details
-$query = "SELECT * FROM users WHERE user_id = ?";
+$query = "SELECT * FROM admin WHERE user_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $session_user_id);
 $stmt->execute();
@@ -92,6 +92,8 @@ $stmt->close();
 
     <!-- Custom fonts for this template-->
     <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
     <!-- Custom styles for this template-->

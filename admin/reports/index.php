@@ -53,6 +53,8 @@ if(logged_in()){
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../../img/logo1.png">
     <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
     <link href="../../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     

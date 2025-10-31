@@ -5,8 +5,8 @@ include '../../loginverification.php';
 // Set content type to JSON
 header('Content-Type: application/json');
 
-// Check if user is logged in
-if (!logged_in()) {
+// Check if user is logged in and is admin
+if (!logged_in() || !is_admin()) {
     echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
     exit;
 }
@@ -46,10 +46,13 @@ if ($result->num_rows > 0) {
     exit;
 }
 
+// Hash password before saving
+$password_hash = password_hash($password, PASSWORD_DEFAULT);
+
 // Insert new admin
 $insert_query = "INSERT INTO admin (name, email, password, status) VALUES (?, ?, ?, 'ACTIVE')";
 $insert_stmt = $conn->prepare($insert_query);
-$insert_stmt->bind_param("sss", $name, $email, $password);
+$insert_stmt->bind_param("sss", $name, $email, $password_hash);
 
 if ($insert_stmt->execute()) {
     echo json_encode(['success' => true, 'message' => 'Administrator added successfully']);
