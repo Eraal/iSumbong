@@ -76,7 +76,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal">
+                <a class="nav-link js-admin-logout" href="../../logout.php" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-fw fa-sign-out-alt"></i>
                     <span>Log out</span>
                 </a>

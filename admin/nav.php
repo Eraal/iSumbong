@@ -34,7 +34,7 @@
                                     Dashboard
                                 </a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                <a class="dropdown-item js-admin-logout" href="../../logout.php" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Logout
                                 </a>
@@ -65,5 +65,25 @@
             </div>
         </div>
     </div>
+
+<script>
+// Robust logout link: open modal when available, else navigate to logout.php directly
+document.addEventListener('click', function (e) {
+    var a = e.target.closest('a.js-admin-logout');
+    if (!a) return;
+    var modalEl = document.getElementById('logoutModal');
+    // If modal exists and Bootstrap's jQuery plugin is available, show the modal
+    if (modalEl && window.$ && typeof window.$(modalEl).modal === 'function') {
+        e.preventDefault();
+        window.$(modalEl).modal('show');
+    } else {
+        // Otherwise, allow default navigation to the real logout route
+        // Ensure href is set correctly
+        if (!a.getAttribute('href') || a.getAttribute('href') === '#') {
+            a.setAttribute('href', '../../logout.php');
+        }
+    }
+});
+</script>
 
        
