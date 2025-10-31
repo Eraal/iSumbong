@@ -47,23 +47,23 @@ if (isset($_POST['btn_save'])) {
         $query = "SELECT * FROM users WHERE user_id = $user_id";
         $result = $conn->query($query);
         while ($row = $result->fetch_assoc()) {
-        require_once('../../PHPMailer/PHPMailerAutoload.php');
-        
-        // Load environment variables securely
-        require_once('../../includes/env_loader.php');
-        loadEnv('../../.env');
-        
-        $mail = new PHPMailer;
-        $mail->isSMTP();
-        //$mail->SMTPDebug = 2;
-        $mail->Host = 'smtp.gmail.com';
-        $mail->Port = 587;
-        $mail->SMTPAuth = true;
-        $mail->SMTPSecure = 'tls';
-        $mail->Username = env('SMTP_USERNAME');
-        $mail->Password = env('SMTP_PASSWORD');
-        $mail->setFrom(env('SMTP_USERNAME'), 'iSUMBONG System');
-        $mail->addReplyTo(env('SMTP_USERNAME'), 'iSUMBONG System');
+    require_once('../../PHPMailer/PHPMailerAutoload.php');
+    require_once('../../gmail_config.php');
+
+    $mail = new PHPMailer;
+    $mail->isSMTP();
+    //$mail->SMTPDebug = 2;
+    $mail->Host = SMTP_HOST;
+    $mail->Port = SMTP_PORT;
+    $mail->SMTPAuth = true;
+    $mail->SMTPSecure = SMTP_ENCRYPTION;
+    $mail->Username = SMTP_USERNAME;
+    $mail->Password = SMTP_PASSWORD;
+    // Avoid long hangs
+    $mail->Timeout = 15;
+    $mail->SMTPKeepAlive = false;
+    $mail->setFrom(FROM_EMAIL, FROM_NAME);
+    $mail->addReplyTo(REPLY_TO_EMAIL ?: FROM_EMAIL, FROM_NAME);
         $mail->addAddress( $row['email'] , 'Receiver Name');
         $mail->isHTML(true);
         $mail->Subject = 'Update Incident Report';
