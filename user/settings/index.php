@@ -41,11 +41,26 @@ if(isset($_POST['change_password'])) {
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
         
-        if($user && $user['password'] === $current_password) {
-            // Update password
+        // Verify current password (support both hashed and plain text)
+        $password_valid = false;
+        if($user) {
+            if (password_verify($current_password, $user['password'])) {
+                // Hashed password verification
+                $password_valid = true;
+            } elseif ($user['password'] === $current_password) {
+                // Plain text password (backward compatibility)
+                $password_valid = true;
+            }
+        }
+        
+        if($password_valid) {
+            // Hash the new password for security
+            $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+            
+            // Update password with hashed version
             $update_query = "UPDATE users SET password = ? WHERE user_id = ?";
             $update_stmt = $conn->prepare($update_query);
-            $update_stmt->bind_param("si", $new_password, $session_user_id);
+            $update_stmt->bind_param("si", $hashed_new_password, $session_user_id);
             
             if($update_stmt->execute()) {
                 $password_message = "Password changed successfully!";
@@ -449,10 +464,10 @@ if(isset($_POST['change_password'])) {
                         </div>
                     </div>
 
-                    <!-- Appearance & Language Settings Container -->
+                    <!-- Appearance Settings Container -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-info">Appearance & Language</h6>
+                            <h6 class="m-0 font-weight-bold text-info">Appearance Settings</h6>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -477,33 +492,6 @@ if(isset($_POST['change_password'])) {
                                                 <select class="form-control form-control-sm" id="themeSelect">
                                                     <option value="light">Light</option>
                                                     <option value="dark">Dark</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Language Settings -->
-                                <div class="col-xl-6 col-md-6 mb-3">
-                                    <div class="card border-left-warning h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                        Language</div>
-                                                    <div class="h6 mb-0 font-weight-bold text-gray-800">Display Language</div>
-                                                    <div class="mt-2 mb-0 text-muted text-xs">
-                                                        <span>Select your preferred language</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-language fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <select class="form-control form-control-sm" id="languageSelect">
-                                                    <option value="english">English</option>
-                                                    <option value="tagalog">Tagalog</option>
                                                 </select>
                                             </div>
                                         </div>

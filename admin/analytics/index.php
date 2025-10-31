@@ -15,7 +15,7 @@ if(logged_in()){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport - Analytics</title>
+    <title>iSumbong - Analytics</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
@@ -104,7 +104,7 @@ if(logged_in()){
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Analytics</h1>
+                        <h1 class="h3 mb-0 text-dark-800">Analytics</h1>
                         <button id="refreshBtn" class="btn btn-primary btn-sm">
                             <i class="fas fa-sync-alt fa-sm"></i> Refresh Data
                         </button>

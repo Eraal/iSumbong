@@ -11,10 +11,10 @@ if(logged_in()){
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="About iSUMBONG - Cybersecurity Awareness & Reporting Platform">
+    <meta name="description" content="About iSumbong - Cybersecurity Awareness & Reporting Platform">
     <meta name="author" content="">
 
-    <title>About - iSUMBONG</title>
+    <title>About - iSumbong</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
 
     <!-- Custom fonts for this template-->
@@ -48,7 +48,7 @@ if(logged_in()){
                     <div class="row align-items-center">
                         <div class="col-lg-8 text-white">
                             <h1 class="display-3 font-weight-bold mb-4" style="font-size: 3.5rem; line-height: 1.1;">
-                                About <span style="color: #3498db;">iSUMBONG</span>
+                                About <span style="color: #3498db;">iSumbong</span>
                             </h1>
                             <p class="lead mb-4" style="font-size: 1.3rem; opacity: 0.9; max-width: 600px;">
                                 Empowering organizations and individuals with comprehensive cybersecurity awareness and incident reporting solutions.
@@ -73,7 +73,7 @@ if(logged_in()){
                                     <i class="fas fa-bullseye text-white fa-lg"></i>
                                 </div>
                                 <h3 class="font-weight-bold text-dark mb-3">Our Mission</h3>
-                                <p class="text-muted mb-0" style="line-height: 1.7;">
+                                <p class="text-dark mb-0" style="line-height: 1.7;">
                                     To provide a comprehensive platform that enables organizations to effectively manage cybersecurity incidents, 
                                     educate users about emerging threats, and build a proactive security culture through awareness and reporting.
                                 </p>
@@ -85,7 +85,7 @@ if(logged_in()){
                                     <i class="fas fa-eye text-white fa-lg"></i>
                                 </div>
                                 <h3 class="font-weight-bold text-dark mb-3">Our Vision</h3>
-                                <p class="text-muted mb-0" style="line-height: 1.7;">
+                                <p class="text-dark mb-0" style="line-height: 1.7;">
                                     To create a safer digital environment where every individual is empowered with the knowledge and tools 
                                     necessary to identify, report, and respond to cybersecurity threats effectively.
                                 </p>
@@ -101,7 +101,7 @@ if(logged_in()){
                     <div class="row text-center mb-5">
                         <div class="col-12">
                             <h2 class="font-weight-bold text-dark mb-3">Platform Features</h2>
-                            <p class="text-muted">Comprehensive tools for cybersecurity management</p>
+                            <p class="text-dark">Comprehensive tools for cybersecurity management</p>
                         </div>
                     </div>
                     
@@ -113,7 +113,7 @@ if(logged_in()){
                                     <i class="fas fa-exclamation-triangle text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Incident Reporting</h4>
-                                <p class="text-muted">Easy-to-use incident reporting system with detailed tracking and status updates.</p>
+                                <p class="text-dark">Easy-to-use incident reporting system with detailed tracking and status updates.</p>
                             </div>
                         </div>
 
@@ -124,7 +124,7 @@ if(logged_in()){
                                     <i class="fas fa-chart-line text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Real-time Analytics</h4>
-                                <p class="text-muted">Comprehensive dashboard with real-time statistics and incident analytics.</p>
+                                <p class="text-dark">Comprehensive dashboard with real-time statistics and incident analytics.</p>
                             </div>
                         </div>
 
@@ -135,7 +135,7 @@ if(logged_in()){
                                     <i class="fas fa-shield-alt text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Security Education</h4>
-                                <p class="text-muted">Educational resources and threat awareness materials to enhance security knowledge.</p>
+                                <p class="text-dark">Educational resources and threat awareness materials to enhance security knowledge.</p>
                             </div>
                         </div>
 
@@ -146,7 +146,7 @@ if(logged_in()){
                                     <i class="fas fa-users text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">User Management</h4>
-                                <p class="text-muted">Comprehensive user management system with role-based access control.</p>
+                                <p class="text-dark">Comprehensive user management system with role-based access control.</p>
                             </div>
                         </div>
 
@@ -157,7 +157,7 @@ if(logged_in()){
                                     <i class="fas fa-bell text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Smart Notifications</h4>
-                                <p class="text-muted">Automated notification system for incident updates and security alerts.</p>
+                                <p class="text-dark">Automated notification system for incident updates and security alerts.</p>
                             </div>
                         </div>
 
@@ -168,7 +168,7 @@ if(logged_in()){
                                     <i class="fas fa-lock text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Secure Platform</h4>
-                                <p class="text-muted">Enterprise-grade security with encrypted data transmission and secure authentication.</p>
+                                <p class="text-dark">Enterprise-grade security with encrypted data transmission and secure authentication.</p>
                             </div>
                         </div>
                     </div>
@@ -181,7 +181,7 @@ if(logged_in()){
                     <div class="row text-center mb-5">
                         <div class="col-12">
                             <h2 class="font-weight-bold text-dark mb-3">Get Started Today</h2>
-                            <p class="text-muted">Ready to enhance your cybersecurity posture?</p>
+                            <p class="text-dark">Ready to enhance your cybersecurity posture?</p>
                         </div>
                     </div>
                     
@@ -189,7 +189,7 @@ if(logged_in()){
                         <div class="col-lg-8 text-center">
                             <div class="cta-card p-5" style="background: white; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                                 <h3 class="font-weight-bold text-dark mb-3">Start Reporting Incidents</h3>
-                                <p class="text-muted mb-4">Join thousands of organizations using iSUMBONG to manage their cybersecurity incidents effectively.</p>
+                                <p class="text-dark mb-4">Join thousands of organizations using iSumbong to manage their cybersecurity incidents effectively.</p>
                                 
                                 <div class="cta-buttons">
                                     <a href="../incident/register.php" class="btn btn-danger btn-lg mr-3 px-4 py-3" style="border-radius: 50px; font-weight: 600;">

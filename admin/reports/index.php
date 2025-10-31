@@ -280,7 +280,7 @@ if(logged_in()){
                                                 <td>
                                                     <div>
                                                         <strong><?php echo htmlspecialchars($row['user_name'] ?? 'Unknown'); ?></strong><br>
-                                                        <small class="text-muted"><?php echo htmlspecialchars($row['user_email'] ?? 'No email'); ?></small>
+                                                        <small class="text-dark"><?php echo htmlspecialchars($row['user_email'] ?? 'No email'); ?></small>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -328,7 +328,7 @@ if(logged_in()){
                                                     <div class="py-4">
                                                         <i class="fas fa-inbox fa-3x text-gray-400 mb-3"></i>
                                                         <h5 class="text-gray-500">No Reports Found</h5>
-                                                        <p class="text-muted">There are no incident reports to display.</p>
+                                                        <p class="text-dark">There are no incident reports to display.</p>
                                                     </div>
                                                 </td>
                                             </tr>

@@ -2,7 +2,6 @@
 include '../../connectMySql.php';
 include '../../loginverification.php';
 
-
 if (logged_in()) {
 ?>
     <!DOCTYPE html>
@@ -16,7 +15,7 @@ if (logged_in()) {
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>iReport - Incident Management</title>
+        <title>iSumbong - Incident Management</title>
         <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
         <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
@@ -116,7 +115,8 @@ if (logged_in()) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = "SELECT * FROM incident ORDER BY date DESC";
+                                            // Only show incidents that are not deleted by admin
+                                            $query = "SELECT * FROM incident WHERE (deleted_by_admin IS NULL OR deleted_by_admin = 0) ORDER BY date DESC";
                                             $result = $conn->query($query);
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
@@ -132,7 +132,7 @@ if (logged_in()) {
                                                 }
 
                                                 echo "<td class='text-dark font-weight-bold'>" . htmlspecialchars(strtoupper($row['title'])) . "</td>";
-                                                echo "<td class='text-muted'>" . htmlspecialchars(strtoupper($row['date'])) . "</td>";
+                                                echo "<td class='text-dark'>" . htmlspecialchars(strtoupper($row['date'])) . "</td>";
                                                 echo "<td><span class='badge badge-pill badge-" . $color . " px-3 py-2'>" . strtoupper($row['status']) . "</span></td>";
                                                 echo "<td>
                                                 <a href='view.php?id=" . $row["id"] . "' class='btn btn-sm btn-outline-primary rounded-pill shadow-sm'>
@@ -149,7 +149,7 @@ if (logged_in()) {
 
                                                 if ($result_feedback->num_rows > 0) {
                                                     $feedback = $result_feedback->fetch_assoc();
-                                                    echo " <button class='btn btn-sm btn-outline-info rounded-pill ml-2'
+                                                    echo " <button class='btn btn-sm btn-outline-info rounded-pill ml-1'
                                                         data-toggle='modal'
                                                         data-target='#viewFeedbackModal'
                                                         onclick='showFeedback(" . json_encode($feedback) . ")'>

@@ -1,21 +1,40 @@
 <?php
-// Gmail SMTP Configuration for iREPORT
-// Replace with your actual Gmail credentials
+// Gmail SMTP Configuration for iSUMBONG
+// Credentials are now stored securely in .env file
+
+// Handle different include paths depending on where this file is called from
+$base_path = dirname(__FILE__);
+if (file_exists($base_path . '/includes/env_loader.php')) {
+    require_once($base_path . '/includes/env_loader.php');
+} elseif (file_exists($base_path . '/../../includes/env_loader.php')) {
+    require_once($base_path . '/../../includes/env_loader.php');
+} else {
+    // Fallback - try to find it
+    require_once(dirname(__FILE__) . '/includes/env_loader.php');
+}
+
+// Load .env file with correct path
+$env_path = $base_path . '/.env';
+if (!file_exists($env_path)) {
+    $env_path = dirname(__FILE__) . '/.env';
+}
+loadEnv($env_path);
 
 // SMTP Settings
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USERNAME', 'ireport211@gmail.com'); // Replace with your Gmail address
-define('SMTP_PASSWORD', 'zjol lwct tqfg sokf');    // Replace with your Gmail App Password
+define('SMTP_USERNAME', env('SMTP_USERNAME'));
+define('SMTP_PASSWORD', env('SMTP_PASSWORD'));
 define('SMTP_ENCRYPTION', 'tls');
 
 // Email Settings
-define('FROM_EMAIL', 'ireport211@gmail.com');    // Replace with your Gmail address
-define('FROM_NAME', 'iREPORT System');
-define('REPLY_TO_EMAIL', 'ireport211@gmail.com'); // Replace with your Gmail address
+define('FROM_EMAIL', env('SMTP_USERNAME'));
+define('FROM_NAME', 'iSUMBONG System');
+define('REPLY_TO_EMAIL', env('SMTP_USERNAME'));
 
-// Verification Settings
-define('VERIFICATION_BASE_URL', 'http://localhost/iSUMBONG/verify.php'); // Adjust if needed
+// Verification Settings - Uses environment variable for flexibility
+$app_url = env('APP_URL', 'http://localhost/iSUMBONG');
+define('VERIFICATION_BASE_URL', $app_url . '/verify.php');
 
 /*
 SETUP INSTRUCTIONS:

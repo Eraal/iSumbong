@@ -14,7 +14,7 @@ if(logged_in()){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport - User Management</title>
+    <title>iSumbong - User Management</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
@@ -115,12 +115,15 @@ if(logged_in()){
 
                                         echo "<tr>";
                                         echo "<td class='text-center'>
+                                                <a href='view.php?id=".$row['user_id']."' class='btn btn-sm btn-outline-primary rounded-pill shadow-sm mr-1'>
+                                                    <i class='fas fa-eye'></i> View
+                                                </a>
                                                 <a data-id='".$row['user_id']."' class='btn btn-sm btn-outline-danger rounded-pill shadow-sm delete_user'>
                                                     <i class='fas fa-trash'></i>
                                                 </a>
                                                 </td>";
                                         echo "<td class='text-dark font-weight-bold'>" . htmlspecialchars($row['name']) . "</td>";
-                                        echo "<td class='text-muted'>" . htmlspecialchars($row['email']) . "</td>";
+                                        echo "<td class='text-dark'>" . htmlspecialchars($row['email']) . "</td>";
                                         echo "<td>$status</td>";
                                         echo "</tr>";
                                     }

@@ -12,7 +12,7 @@ $status = "";
 $user_id = "";
 $suggestion = "";
 
-$query = "SELECT a.* FROM incident a 
+$query = "SELECT a.*, a.created_at FROM incident a 
 WHERE a.id = '".$id."'";
 $result = $conn->query($query);
 $incident_data = [];
@@ -48,16 +48,22 @@ if (isset($_POST['btn_save'])) {
         $result = $conn->query($query);
         while ($row = $result->fetch_assoc()) {
         require_once('../../PHPMailer/PHPMailerAutoload.php');
+        
+        // Load environment variables securely
+        require_once('../../includes/env_loader.php');
+        loadEnv('../../.env');
+        
         $mail = new PHPMailer;
         $mail->isSMTP();
         //$mail->SMTPDebug = 2;
         $mail->Host = 'smtp.gmail.com';
         $mail->Port = 587;
         $mail->SMTPAuth = true;
-        $mail->Username = 'sendernotifalert@gmail.com';
-        $mail->Password = 'asng husd wqqr xuwp';
-        $mail->setFrom('sendernotifalert@gmail.com', 'iReport');
-        $mail->addReplyTo('sendernotifalert@gmail.com', 'iReport');
+        $mail->SMTPSecure = 'tls';
+        $mail->Username = env('SMTP_USERNAME');
+        $mail->Password = env('SMTP_PASSWORD');
+        $mail->setFrom(env('SMTP_USERNAME'), 'iSUMBONG System');
+        $mail->addReplyTo(env('SMTP_USERNAME'), 'iSUMBONG System');
         $mail->addAddress( $row['email'] , 'Receiver Name');
         $mail->isHTML(true);
         $mail->Subject = 'Update Incident Report';
@@ -365,12 +371,63 @@ $suggestion = $row['suggestion'];
         .attachment-item {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
-            padding: 10px 15px;
+            padding: 15px 20px;
             margin-bottom: 10px;
-            border-radius: 5px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .attachment-item:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .attachment-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .attachment-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .attachment-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .attachment-actions .btn {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            min-width: 80px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .attachment-actions .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        
+        .attachment-actions .btn .btn-text {
+            font-weight: 500;
+        }
+        
+        .attachment-actions .btn i {
+            font-size: 0.8rem;
         }
         
         .page-break {
@@ -449,6 +506,28 @@ $suggestion = $row['suggestion'];
                 right: auto;
                 justify-content: center;
                 margin-bottom: 20px;
+            }
+            
+            .attachment-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            
+            .attachment-info {
+                margin-bottom: 10px;
+                width: 100%;
+            }
+            
+            .attachment-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .attachment-actions .btn {
+                flex: 1;
+                margin: 0 4px;
+                min-width: auto;
             }
             
             /* Fixed sidebar responsive styles */
@@ -539,6 +618,13 @@ $suggestion = $row['suggestion'];
                             <div class="field-value"><?= date('F j, Y \a\t g:i A', strtotime($incident_data['created_at'])) ?></div>
                         </div>
                         
+                        <?php if (!empty($incident_data['location'])): ?>
+                        <div class="field-row">
+                            <div class="field-label">Incident Location:</div>
+                            <div class="field-value"><?= htmlspecialchars($incident_data['location']) ?></div>
+                        </div>
+                        <?php endif; ?>
+                        
                         <div class="field-row">
                             <div class="field-label">Current Status:</div>
                             <div class="field-value">
@@ -565,6 +651,13 @@ $suggestion = $row['suggestion'];
                             <div class="field-label">Email Address:</div>
                             <div class="field-value"><?= htmlspecialchars($incident_data['email']) ?></div>
                         </div>
+                        
+                        <?php if (!empty($incident_data['address'])): ?>
+                        <div class="field-row">
+                            <div class="field-label">Address:</div>
+                            <div class="field-value"><?= htmlspecialchars($incident_data['address']) ?></div>
+                        </div>
+                        <?php endif; ?>
                         
                         <?php if (!empty($incident_data['phone'])): ?>
                         <div class="field-row">
@@ -602,25 +695,14 @@ $suggestion = $row['suggestion'];
                         </div>
                         
                         <div class="evidence-grid">
-                            <div class="evidence-item">
-                                <i class="fas fa-file-text <?= $incident_data['evidence_logs'] ? 'evidence-yes' : 'evidence-no' ?>"></i>
-                                <div><strong>System Logs</strong></div>
-                                <div><?= $incident_data['evidence_logs'] ? 'Collected' : 'Not Collected' ?></div>
-                            </div>
+                            
                             <div class="evidence-item">
                                 <i class="fas fa-image <?= $incident_data['evidence_screenshots'] ? 'evidence-yes' : 'evidence-no' ?>"></i>
                                 <div><strong>Screenshots</strong></div>
                                 <div><?= $incident_data['evidence_screenshots'] ? 'Collected' : 'Not Collected' ?></div>
-                            </div>
-                            <div class="evidence-item">
-                                <i class="fas fa-envelope <?= $incident_data['evidence_email'] ? 'evidence-yes' : 'evidence-no' ?>"></i>
-                                <div><strong>Email Evidence</strong></div>
-                                <div><?= $incident_data['evidence_email'] ? 'Collected' : 'Not Collected' ?></div>
-                            </div>
-                            <div class="evidence-item">
-                                <i class="fas fa-folder <?= $incident_data['evidence_other'] ? 'evidence-yes' : 'evidence-no' ?>"></i>
-                                <div><strong>Other Evidence</strong></div>
-                                <div><?= $incident_data['evidence_other'] ? 'Collected' : 'Not Collected' ?></div>
+                                <?php if ($incident_data['evidence_screenshots']): ?>
+                                
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -637,11 +719,23 @@ $suggestion = $row['suggestion'];
                         <ul class="attachment-list">
                             <?php
                             while ($row = $result->fetch_assoc()) {
+                                $file_extension = pathinfo($row['filename'], PATHINFO_EXTENSION);
+                                $is_image = in_array(strtolower($file_extension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']);
+                                
                                 echo '<li class="attachment-item">
-                                        <div><i class="fas fa-file me-2"></i>'.htmlspecialchars($row['filename']).'</div>
-                                        <a href="'.htmlspecialchars($row['attachment']).'" target="_blank" class="no-print">
-                                            <i class="fas fa-download"></i> Download
-                                        </a>
+                                        <div class="attachment-info">
+                                            <i class="fas fa-file me-2"></i>
+                                            <span class="attachment-name">'.htmlspecialchars($row['filename']).'</span>
+                                        </div>
+                                        <div class="attachment-actions no-print">
+                                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewAttachment(\''.htmlspecialchars($row['attachment']).'\', \''.htmlspecialchars($row['filename']).'\', '.($is_image ? 'true' : 'false').')">
+                                                <i class="fas fa-eye"></i>
+                                                <span class="btn-text">View</span>
+                                            </button>
+                                            <a href="'.htmlspecialchars($row['attachment']).'" download="'.htmlspecialchars($row['filename']).'" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-download"></i> Download
+                                            </a>
+                                        </div>
                                     </li>';
                             }
                             ?>
@@ -748,6 +842,53 @@ $suggestion = $row['suggestion'];
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <!-- Evidence Details Modal -->
+    <div class="modal fade" id="evidenceModal" tabindex="-1" role="dialog" aria-labelledby="evidenceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="evidenceModalLabel">
+                        <i class="fas fa-file-alt me-2"></i>Evidence Details
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="evidenceModalBody">
+                    <!-- Evidence details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attachment Viewer Modal -->
+    <div class="modal fade" id="attachmentModal" tabindex="-1" role="dialog" aria-labelledby="attachmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="attachmentModalLabel">
+                        <i class="fas fa-paperclip me-2"></i>Attachment Viewer
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="attachmentModalBody">
+                    <!-- Attachment will be displayed here -->
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="downloadAttachmentBtn" class="btn btn-success" target="_blank">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
@@ -793,6 +934,140 @@ $suggestion = $row['suggestion'];
           "bDestroy": true,
         });
       });
+
+      // Function to view evidence details
+      function viewEvidenceDetails(evidenceType) {
+          const incidentId = <?= $id ?>;
+          let modalContent = '';
+          
+          switch(evidenceType) {
+              case 'logs':
+                  modalContent = `
+                      <div class="alert alert-info">
+                          <h6><i class="fas fa-file-text me-2"></i>System Logs Evidence</h6>
+                          <p>System logs have been collected for incident #${incidentId.toString().padStart(6, '0')}.</p>
+                          <p><strong>Evidence Type:</strong> System Logs<br>
+                          <strong>Status:</strong> Collected<br>
+                          <strong>Collection Date:</strong> <?= date('F j, Y \a\t g:i A', strtotime($incident_data['created_at'])) ?></p>
+                      </div>
+                      <div class="evidence-note">
+                          <h6>Log Details:</h6>
+                          <p>System logs contain important information about the incident including timestamps, user activities, and system events that occurred during the incident timeframe.</p>
+                      </div>
+                  `;
+                  break;
+              case 'screenshots':
+                  modalContent = `
+                      <div class="alert alert-success">
+                          <h6><i class="fas fa-image me-2"></i>Screenshots Evidence</h6>
+                          <p>Screenshots have been collected for incident #${incidentId.toString().padStart(6, '0')}.</p>
+                          <p><strong>Evidence Type:</strong> Screenshots<br>
+                          <strong>Status:</strong> Collected<br>
+                          <strong>Collection Date:</strong> <?= date('F j, Y \a\t g:i A', strtotime($incident_data['created_at'])) ?></p>
+                      </div>
+                      <div class="evidence-note">
+                          <h6>Screenshot Details:</h6>
+                          <p>Screenshots provide visual evidence of the incident including error messages, suspicious activities, or other relevant visual information captured at the time of the incident.</p>
+                      </div>
+                  `;
+                  break;
+              case 'email':
+                  modalContent = `
+                      <div class="alert alert-warning">
+                          <h6><i class="fas fa-envelope me-2"></i>Email Evidence</h6>
+                          <p>Email evidence has been collected for incident #${incidentId.toString().padStart(6, '0')}.</p>
+                          <p><strong>Evidence Type:</strong> Email Evidence<br>
+                          <strong>Status:</strong> Collected<br>
+                          <strong>Collection Date:</strong> <?= date('F j, Y \a\t g:i A', strtotime($incident_data['created_at'])) ?></p>
+                      </div>
+                      <div class="evidence-note">
+                          <h6>Email Details:</h6>
+                          <p>Email evidence includes phishing emails, suspicious communications, or other email-related artifacts that are relevant to the cybersecurity incident.</p>
+                      </div>
+                  `;
+                  break;
+              case 'other':
+                  modalContent = `
+                      <div class="alert alert-secondary">
+                          <h6><i class="fas fa-folder me-2"></i>Other Evidence</h6>
+                          <p>Additional evidence has been collected for incident #${incidentId.toString().padStart(6, '0')}.</p>
+                          <p><strong>Evidence Type:</strong> Other Evidence<br>
+                          <strong>Status:</strong> Collected<br>
+                          <strong>Collection Date:</strong> <?= date('F j, Y \a\t g:i A', strtotime($incident_data['created_at'])) ?></p>
+                      </div>
+                      <div class="evidence-note">
+                          <h6>Additional Evidence Details:</h6>
+                          <p>This category includes any other relevant evidence that doesn't fit into the standard categories but is important for the investigation of this cybersecurity incident.</p>
+                      </div>
+                  `;
+                  break;
+          }
+          
+          document.getElementById('evidenceModalBody').innerHTML = modalContent;
+          $('#evidenceModal').modal('show');
+      }
+
+      // Function to view attachments
+      function viewAttachment(filePath, fileName, isImage) {
+          const modalTitle = document.getElementById('attachmentModalLabel');
+          const modalBody = document.getElementById('attachmentModalBody');
+          const downloadBtn = document.getElementById('downloadAttachmentBtn');
+          
+          modalTitle.innerHTML = `<i class="fas fa-paperclip me-2"></i>${fileName}`;
+          downloadBtn.href = filePath;
+          
+          if (isImage) {
+              modalBody.innerHTML = `
+                  <div class="text-center">
+                      <img src="${filePath}" class="img-fluid" alt="${fileName}" style="max-height: 70vh; border: 1px solid #ddd; border-radius: 5px;">
+                  </div>
+              `;
+          } else {
+              const fileExtension = fileName.split('.').pop().toLowerCase();
+              let icon = 'fas fa-file';
+              let description = 'File';
+              
+              switch(fileExtension) {
+                  case 'pdf':
+                      icon = 'fas fa-file-pdf';
+                      description = 'PDF Document';
+                      break;
+                  case 'doc':
+                  case 'docx':
+                      icon = 'fas fa-file-word';
+                      description = 'Word Document';
+                      break;
+                  case 'xls':
+                  case 'xlsx':
+                      icon = 'fas fa-file-excel';
+                      description = 'Excel Document';
+                      break;
+                  case 'txt':
+                      icon = 'fas fa-file-alt';
+                      description = 'Text Document';
+                      break;
+                  case 'zip':
+                  case 'rar':
+                      icon = 'fas fa-file-archive';
+                      description = 'Archive File';
+                      break;
+              }
+              
+              modalBody.innerHTML = `
+                  <div class="text-center py-5">
+                      <i class="${icon}" style="font-size: 5rem; color: #6c757d; margin-bottom: 20px;"></i>
+                      <h4>${fileName}</h4>
+                      <p class="text-muted">${description}</p>
+                      <p class="text-info">Click "Download" to view this file on your device.</p>
+                      <a href="${filePath}" target="_blank" class="btn btn-primary btn-lg">
+                          <i class="fas fa-external-link-alt me-2"></i>Open in New Tab
+                      </a>
+                  </div>
+              `;
+          }
+          
+          $('#attachmentModal').modal('show');
+      }
     </script>
 </body>
 

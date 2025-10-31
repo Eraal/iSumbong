@@ -11,6 +11,50 @@ $description = "";
 $status = "";
 $suggestion =  "";
 
+// Handle delete incident
+if (isset($_POST['delete_incident_id'])) {
+    $delete_id = intval($_POST['delete_incident_id']);
+    
+    // Check if user_deleted column exists, if not create it
+    $check_column = $conn->query("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'incident' AND COLUMN_NAME = 'user_deleted'");
+    if ($check_column->num_rows == 0) {
+        $conn->query("ALTER TABLE incident ADD COLUMN user_deleted TINYINT(1) DEFAULT 0");
+    }
+    
+    // Soft delete: set user_deleted = 1
+    $delete_query = "UPDATE incident SET user_deleted = 1 WHERE id = $delete_id AND user_id = '".$_SESSION['user_id']."'";
+    
+    if ($conn->query($delete_query)) {
+        echo "<script src='../../js/sweetalert2.all.min.js'></script>
+        <body onload='deleteSuccess()'></body>
+        <script> 
+        function deleteSuccess(){
+            Swal.fire(
+                'Incident Deleted!',
+                'The incident has been removed from your view.',
+                'success'
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'index.php';
+                }
+            });
+        }
+        </script>";
+    } else {
+        echo "<script src='../../js/sweetalert2.all.min.js'></script>
+        <body onload='deleteError()'></body>
+        <script> 
+        function deleteError(){
+            Swal.fire(
+                'Error!',
+                'Failed to delete incident: " . addslashes($conn->error) . "',
+                'error'
+            );
+        }
+        </script>";
+    }
+}
+
 if (isset($_POST['btn_save'])) {
     $status = $_POST['status'];
 
@@ -129,6 +173,108 @@ $suggestion = isset($row['suggestion']) ? $row['suggestion'] : "No specific sugg
 
     <!-- Custom styles for this template-->
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+    
+    <style>
+        /* Mobile-first responsive design */
+        @media (max-width: 768px) {
+            /* Make containers full width on mobile */
+            .container {
+                max-width: 100% !important;
+                padding: 0 10px !important;
+            }
+            
+            .container.mt-5 {
+                max-width: 100% !important;
+                margin-top: 1rem !important;
+                padding: 0 5px !important;
+            }
+            
+            /* Adjust card padding for mobile */
+            .card-body {
+                padding: 1rem !important;
+            }
+            
+            .p-5 {
+                padding: 1rem !important;
+            }
+            
+            /* Make content sections mobile-friendly */
+            .d-flex.flex-wrap.gap-3 {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+            
+            .d-flex.flex-wrap.gap-3 > div {
+                margin-bottom: 0.5rem;
+            }
+            
+            /* Adjust content boxes for mobile */
+            .bg-light.p-3 {
+                padding: 1rem !important;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            /* Make evidence section mobile-friendly */
+            .d-flex.justify-content-between.align-items-center {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.5rem;
+            }
+            
+            /* Mobile-friendly buttons */
+            .btn {
+                font-size: 14px;
+                padding: 0.5rem 1rem;
+            }
+            
+            /* Adjust text sizes for mobile */
+            h2.fw-bold {
+                font-size: 1.5rem !important;
+            }
+            
+            h6.fw-semibold {
+                font-size: 1rem !important;
+            }
+            
+            /* Make comments section mobile-friendly */
+            .card.mb-4 {
+                margin-bottom: 1rem !important;
+            }
+            
+            /* Adjust sidebar for mobile */
+            #wrapper {
+                padding-left: 0 !important;
+            }
+            
+            .sidebar {
+                margin-left: -224px;
+            }
+            
+            .sidebar.toggled {
+                margin-left: 0;
+            }
+            
+            #content-wrapper {
+                width: 100% !important;
+                margin-left: 0 !important;
+            }
+        }
+        
+        /* Tablet adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container.mt-5 {
+                max-width: 95% !important;
+            }
+        }
+        
+        /* Desktop adjustments */
+        @media (min-width: 1025px) {
+            .container.mt-5 {
+                max-width: 1200px !important;
+            }
+        }
+    </style>
 
 </head>
 
@@ -150,7 +296,7 @@ $suggestion = isset($row['suggestion']) ? $row['suggestion'] : "No specific sugg
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                         <div class="container">
+                         <div class="container-fluid px-2">
 
                             <div class="card o-hidden border-0 shadow-lg my-5">
                                 <div class="card-body p-0">
@@ -161,12 +307,21 @@ $suggestion = isset($row['suggestion']) ? $row['suggestion'] : "No specific sugg
                                                 <div class="text-center">
                                                     <h1 class="h4 text-gray-900 mb-4">Report Incident</h1>
                                                 </div>
-                                               <div class="container mt-5" style="max-width: 850px;">
+                                               <div class="container mt-5" style="max-width: 100%; width: 100%; padding: 0 15px;">
                                                     <div class="card shadow-sm border-0 rounded-3">
                                                         <div class="card-body">
                                                             <a href="index.php" class="text-primary d-flex align-items-center mb-3" style="text-decoration: none;">
-                                                                <i class="fas fa-arrow-left me-2"></i> Back to Manange Incidents
+                                                                <i class="fas fa-arrow-left me-2"></i> Back to Manage Incidents
                                                             </a>
+                                                            
+                                                            <!-- Action Buttons -->
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <div></div>
+                                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteIncident(<?=$id?>)">
+                                                                    <i class="fas fa-trash"></i> Delete Incident
+                                                                </button>
+                                                            </div>
+                                                            
                                                             <hr>
                                                             <h2 class="fw-bold"><?=$title?></h2>
 
@@ -320,7 +475,31 @@ $suggestion = isset($row['suggestion']) ? $row['suggestion'] : "No specific sugg
           "bDestroy": true,
         });
       });
+      
+      // Delete incident function
+      function deleteIncident(id) {
+          Swal.fire({
+              title: 'Are you sure?',
+              text: "This will remove the incident from your view. You won't be able to see it anymore!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#d33',
+              cancelButtonColor: '#3085d6',
+              confirmButtonText: 'Yes, delete it!',
+              cancelButtonText: 'Cancel'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  document.getElementById('delete_incident_id').value = id;
+                  document.getElementById('deleteForm').submit();
+              }
+          });
+      }
     </script>
+    
+    <!-- Hidden form for delete action -->
+    <form id="deleteForm" method="POST" style="display: none;">
+        <input type="hidden" id="delete_incident_id" name="delete_incident_id" value="">
+    </form>
 </body>
 
 </html>

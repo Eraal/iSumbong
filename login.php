@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iSUMBONG - User Login</title>
+    <title>iSumbong - User Login</title>
     <link rel="icon" type="image/x-icon" href="img/logo1.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="js/sweetalert2.all.min.js"></script>
@@ -537,7 +537,7 @@
             <div class="hero-content">
                 <div class="logo">
                     <i class="fas fa-shield-alt"></i>
-                    iSUMBONG
+                    iSumbong
                 </div>
                 
                 <h1 class="hero-title">User Portal</h1>

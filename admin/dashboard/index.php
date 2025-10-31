@@ -16,7 +16,7 @@ $current_admin = get_logged_user();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport - Admin Dashboard</title>
+    <title>iSumbong - Admin Dashboard</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
@@ -151,7 +151,7 @@ $current_admin = get_logged_user();
                               </div>
                               <div>
                                 <h6 class="text-uppercase font-weight-bold mb-1 text-info">Total</h6>
-                                <small class="text-muted">All Reports</small>
+                                <small class="text-dark font-weight-normal">All Reports</small>
                               </div>
                             </div>
                             <div class="text-center">
@@ -178,7 +178,7 @@ $current_admin = get_logged_user();
                               </div>
                               <div>
                                 <h6 class="text-uppercase font-weight-bold mb-1 text-danger">Pending</h6>
-                                <small class="text-muted">Waiting</small>
+                                <small class="text-dark">Waiting</small>
                               </div>
                             </div>
                             <div class="text-center">
@@ -205,7 +205,7 @@ $current_admin = get_logged_user();
                               </div>
                               <div>
                                 <h6 class="text-uppercase font-weight-bold mb-1 text-warning">Investigating</h6>
-                                <small class="text-muted">In Progress</small>
+                                <small class="text-dark">In Progress</small>
                               </div>
                             </div>
                             <div class="text-center">
@@ -232,7 +232,7 @@ $current_admin = get_logged_user();
                               </div>
                               <div>
                                 <h6 class="text-uppercase font-weight-bold mb-1 text-success">Resolved</h6>
-                                <small class="text-muted">Closed</small>
+                                <small class="text-dark">Closed</small>
                               </div>
                             </div>
                             <div class="text-center">
@@ -316,7 +316,7 @@ $current_admin = get_logged_user();
 
               echo "<tr>";
               echo "<td class='text-dark font-weight-bold'>" . htmlspecialchars(strtoupper($row['title'])) . "</td>";
-              echo "<td class='text-muted'>" . htmlspecialchars(strtoupper($row['date'])) . "</td>";
+              echo "<td class='text-dark'>" . htmlspecialchars(strtoupper($row['date'])) . "</td>";
               echo "<td><span class='badge badge-{$color} badge-pill px-3 py-2'>" . strtoupper($row['status']) . "</span></td>";
               echo "<td>
                       <a href='view.php?id={$row["id"]}' class='btn btn-sm btn-outline-primary rounded-pill shadow-sm'>

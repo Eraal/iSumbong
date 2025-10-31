@@ -39,6 +39,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['incident_id'])) {
     $conn->close();
 }
 
+// Handle incident deletion (soft delete - hide from user view only)
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['delete_incident_id'])) {
+    $incident_id = intval($_POST['delete_incident_id']);
+    $user_id = intval($_SESSION['user_id']);
+    
+    // Add user_deleted column if it doesn't exist
+    $check_column = $conn->query("SHOW COLUMNS FROM incident LIKE 'user_deleted'");
+    if ($check_column->num_rows == 0) {
+        $conn->query("ALTER TABLE incident ADD COLUMN user_deleted TINYINT(1) DEFAULT 0");
+    }
+    
+    // Soft delete - only hide from user view
+    $delete_sql = "UPDATE incident SET user_deleted = 1 WHERE id = ? AND user_id = ?";
+    $delete_stmt = $conn->prepare($delete_sql);
+    $delete_stmt->bind_param("ii", $incident_id, $user_id);
+    
+    if ($delete_stmt->execute() && $delete_stmt->affected_rows > 0) {
+        echo "<script>alert('✅ Incident deleted from your view successfully!'); window.location.href='index.php';</script>";
+    } else {
+        echo "<script>alert('❌ Error deleting incident or incident not found.'); window.location.href='index.php';</script>";
+    }
+    
+    $delete_stmt->close();
+}
+
 
 
 if (logged_in()) {
@@ -136,7 +161,7 @@ if (logged_in()) {
                                             <div class="stat-item">
                                                 <h3 class="font-weight-bold mb-1" style="color: #3498db;">
                                                     <?php
-                                                    $total_query = "SELECT count(id) as total FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "'";
+                                                    $total_query = "SELECT count(id) as total FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                     $total_result = $conn->query($total_query);
                                                     $total_row = $total_result->fetch_assoc();
                                                     echo $total_row['total'];
@@ -149,7 +174,7 @@ if (logged_in()) {
                                             <div class="stat-item">
                                                 <h3 class="font-weight-bold mb-1" style="color: #e74c3c;">
                                                     <?php
-                                                    $pending_query = "SELECT count(id) as pending FROM incident WHERE status = 'PENDING' AND user_id = '" . $_SESSION['user_id'] . "'";
+                                                    $pending_query = "SELECT count(id) as pending FROM incident WHERE status = 'PENDING' AND user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                     $pending_result = $conn->query($pending_query);
                                                     $pending_row = $pending_result->fetch_assoc();
                                                     echo $pending_row['pending'];
@@ -162,20 +187,20 @@ if (logged_in()) {
                                             <div class="stat-item">
                                                 <h3 class="font-weight-bold mb-1" style="color: #f39c12;">
                                                     <?php
-                                                    $investigating_query = "SELECT count(id) as investigating FROM incident WHERE status = 'INVESTIGATING' AND user_id = '" . $_SESSION['user_id'] . "'";
+                                                    $investigating_query = "SELECT count(id) as investigating FROM incident WHERE status = 'INVESTIGATING' AND user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                     $investigating_result = $conn->query($investigating_query);
                                                     $investigating_row = $investigating_result->fetch_assoc();
                                                     echo $investigating_row['investigating'];
                                                     ?>
                                                 </h3>
-                                                <small>Active</small>
+                                                <small>Investigating</small>
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="stat-item">
                                                 <h3 class="font-weight-bold mb-1" style="color: #27ae60;">
                                                     <?php
-                                                    $resolved_query = "SELECT count(id) as resolved FROM incident WHERE status = 'RESOLVED' AND user_id = '" . $_SESSION['user_id'] . "'";
+                                                    $resolved_query = "SELECT count(id) as resolved FROM incident WHERE status = 'RESOLVED' AND user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                     $resolved_result = $conn->query($resolved_query);
                                                     $resolved_row = $resolved_result->fetch_assoc();
                                                     echo $resolved_row['resolved'];
@@ -239,7 +264,7 @@ if (logged_in()) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = "SELECT * FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "' ORDER BY date DESC";
+                                            $query = "SELECT * FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0) ORDER BY date DESC";
                                             $result = $conn->query($query);
 
                                             if ($result->num_rows > 0) {
@@ -268,6 +293,9 @@ if (logged_in()) {
                                                         </a>
                                                         <button class='btn btn-sm btn-outline-secondary rounded-pill mr-2' onclick='shareIncident(" . $row["id"] . ")'>
                                                             <i class='fas fa-share-alt mr-1'></i> Share
+                                                        </button>
+                                                        <button class='btn btn-sm btn-outline-danger rounded-pill mr-2' onclick='deleteIncident(" . $row["id"] . ")'>
+                                                            <i class='fas fa-trash mr-1'></i> Delete
                                                         </button>";
 
                                                     // FEEDBACK OR VIEW FEEDBACK BUTTON
@@ -603,6 +631,25 @@ if (logged_in()) {
                     }).catch(() => {
                         alert('Link: ' + url);
                     });
+                }
+            }
+
+            // Delete Incident Function
+            function deleteIncident(incidentId) {
+                if (confirm('⚠️ Are you sure you want to delete this incident?\n\nNote: This will only remove it from your personal view. The incident will still be visible to administrators for security purposes.\n\nThis action cannot be undone.')) {
+                    // Create a form and submit it
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'delete_incident_id';
+                    input.value = incidentId;
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
                 }
             }
 

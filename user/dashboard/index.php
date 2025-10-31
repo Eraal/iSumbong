@@ -55,7 +55,7 @@ include '../../includes/theme_system.php';
                         <!-- Left Content -->
                         <div class="col-lg-7 col-md-12 text-white mb-4 mb-lg-0">
                             <h1 class="display-3 font-weight-bold mb-4" style="font-size: 4rem; line-height: 1.1;">
-                                Welcome to <span style="color: #3498db;">iSUMBONG</span>
+                                Welcome to <span style="color: #3498db;">iSumbong</span>
                             </h1>
                             <p class="lead mb-5" style="font-size: 1.5rem; opacity: 0.9; max-width: 600px;">
                                 Your trusted portal for Cybersecurity Awareness & Reporting.
@@ -75,26 +75,38 @@ include '../../includes/theme_system.php';
                         <!-- Right Content - Images -->
                         <div class="col-lg-5 col-md-12">
                             <div class="row justify-content-center">
-                                <!-- Featured Image -->
-                                <div class="col-6 text-center mb-4">
+                                <!-- PNP Logo -->
+                                <div class="col-4 text-center mb-4">
+                                    <div class="logo-container" style="position: relative;">
+                                        <div class="pnp-main-logo-wrapper" style="width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 50%; backdrop-filter: blur(10px);">
+                                            <img src="../../img/pnp.png" alt="Philippine National Police" style="width: 110px; height: 110px; object-fit: contain;">
+                                        </div>
+                                        <div class="mt-2">
+                                            <p class="text-white font-weight-bold opacity-75 small" style="font-size: 0.7rem;">Philippine National<br>Police</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- System Logo (Middle) -->
+                                <div class="col-4 text-center mb-4">
                                     <div class="hero-image-container" style="position: relative;">
-                                        <div class="hero-image-wrapper" style="width: 180px; height: 180px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 4px solid rgba(255,255,255,0.2);">
+                                        <div class="hero-image-wrapper" style="width: 140px; height: 140px; margin: 0 auto; border-radius: 15px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 4px solid rgba(255,255,255,0.2);">
                                             <img src="../../img/494834102_1016804407314972_5448036501277750785_n.jpg" alt="Cybersecurity" style="width: 100%; height: 100%; object-fit: cover;">
                                         </div>
-                                        <div class="mt-3">
-                                            <p class="text-white font-weight-bold opacity-75 small">Secure Reporting<br>Platform</p>
+                                        <div class="mt-2">
+                                            <p class="text-white font-weight-bold opacity-75 small" style="font-size: 0.7rem;">Secure Reporting<br>Platform</p>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <!-- PNP ACG Logo -->
-                                <div class="col-6 text-center mb-4">
+                                <div class="col-4 text-center mb-4">
                                     <div class="logo-container" style="position: relative;">
-                                        <div class="pnp-logo-wrapper" style="width: 180px; height: 180px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 50%; backdrop-filter: blur(10px);">
-                                            <img src="../../img/pnp-acg-logo-new.png" alt="PNP Anti-Cybercrime Group" style="width: 140px; height: 140px; object-fit: contain;">
+                                        <div class="pnp-logo-wrapper" style="width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 50%; backdrop-filter: blur(10px);">
+                                            <img src="../../img/pnp-acg-logo-new.png" alt="PNP Anti-Cybercrime Group" style="width: 110px; height: 110px; object-fit: contain;">
                                         </div>
-                                        <div class="mt-3">
-                                            <p class="text-white font-weight-bold opacity-75 small">Philippine National Police<br>Anti-Cybercrime Group</p>
+                                        <div class="mt-2">
+                                            <p class="text-white font-weight-bold opacity-75 small" style="font-size: 0.7rem;">PNP Anti-Cybercrime<br>Group</p>
                                         </div>
                                     </div>
                                 </div>
@@ -112,10 +124,10 @@ include '../../includes/theme_system.php';
                         <div class="col-lg-5">
                             <div class="about-content">
                                 <h2 class="font-weight-bold text-dark mb-4">
-                                    <i class="fas fa-shield-alt text-primary mr-3"></i>About iSUMBONG
+                                    <i class="fas fa-shield-alt text-primary mr-3"></i>About iSumbong
                                 </h2>
                                 <p class="lead text-dark mb-4" style="font-size: 1.1rem;">
-                                    iSUMBONG is a comprehensive cybersecurity incident reporting platform developed in partnership with the Philippine National Police Anti-Cybercrime Group (PNP-ACG).
+                                    iSumbong is a comprehensive cybersecurity incident reporting platform developed in partnership with the Philippine National Police Anti-Cybercrime Group (PNP-ACG).
                                 </p>
                                 <div class="feature-list">
                                     <div class="feature-item d-flex align-items-center mb-2">
@@ -124,7 +136,7 @@ include '../../includes/theme_system.php';
                                         </div>
                                         <div>
                                             <h6 class="mb-1 text-dark font-weight-bold" style="font-size: 14px;">Incident Reporting</h6>
-                                            <small class="text-muted" style="font-size: 12px;">Report cybersecurity incidents quickly and securely</small>
+                                            <small class="text-dark" style="font-size: 12px;">Report cybersecurity incidents quickly and securely</small>
                                         </div>
                                     </div>
                                     <div class="feature-item d-flex align-items-center mb-2">
@@ -133,7 +145,7 @@ include '../../includes/theme_system.php';
                                         </div>
                                         <div>
                                             <h6 class="mb-1 text-dark font-weight-bold" style="font-size: 14px;">Cybersecurity Education</h6>
-                                            <small class="text-muted" style="font-size: 12px;">Learn about latest threats and protection methods</small>
+                                            <small class="text-dark" style="font-size: 12px;">Learn about latest threats and protection methods</small>
                                         </div>
                                     </div>
                                     <div class="feature-item d-flex align-items-center mb-2">
@@ -142,7 +154,7 @@ include '../../includes/theme_system.php';
                                         </div>
                                         <div>
                                             <h6 class="mb-1 text-dark font-weight-bold" style="font-size: 14px;">Latest News & Alerts</h6>
-                                            <small class="text-muted" style="font-size: 12px;">Stay updated with cybercrime news and warnings</small>
+                                            <small class="text-dark" style="font-size: 12px;">Stay updated with cybercrime news and warnings</small>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +169,7 @@ include '../../includes/theme_system.php';
                                 
                                 <div class="text-center mb-3" style="position: relative; z-index: 2;">
                                     <h4 class="font-weight-bold text-dark">Easy Mobile Reporting</h4>
-                                    <p class="text-muted small">Report incidents anytime, anywhere</p>
+                                    <p class="text-dark small">Report incidents anytime, anywhere</p>
                                 </div>
                                 
                                 <!-- Phone Frame -->
@@ -168,7 +180,7 @@ include '../../includes/theme_system.php';
                                         <div class="phone-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px solid #eee;">
                                             <div style="font-size: 10px; color: #666;">9:41 AM</div>
                                             <div style="font-size: 12px; font-weight: bold; color: #e74c3c;">
-                                                <i class="fas fa-shield-alt" style="margin-right: 4px;"></i>iSUMBONG
+                                                <i class="fas fa-shield-alt" style="margin-right: 4px;"></i>iSumbong
                                             </div>
                                             <div style="font-size: 10px; color: #666;">100%</div>
                                         </div>
@@ -253,7 +265,7 @@ include '../../includes/theme_system.php';
                 <div class="container">
                     <div class="row text-center mb-5">
                         <div class="col-12">
-                            <h2 class="font-weight-bold text-dark mb-3">Your Security Dashboard</h2>
+                            <h2 class="font-weight-bold text-dark mb-3">Your Incident Dashboard</h2>
                             <p class="text-dark">Track and manage your cybersecurity incidents</p>
                         </div>
                     </div>
@@ -273,14 +285,14 @@ include '../../includes/theme_system.php';
                                     <div class="text-right">
                                         <h3 class="font-weight-bold text-dark mb-0">
                                             <?php
-                                                $query = "SELECT count(id) as total FROM incident WHERE user_id = '".$_SESSION['user_id']."'";
+                                                $query = "SELECT count(id) as total FROM incident WHERE user_id = '".$_SESSION['user_id']."' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                 $result = $conn->query($query);
                                                 if ($row = $result->fetch_assoc()) {
                                                     echo $row['total'];
                                                 }
                                             ?>
                                         </h3>
-                                        <small class="text-muted">Your reports</small>
+                                        <small class="text-dark">Your reports</small>
                                     </div>
                                 </div>
                             </div>
@@ -299,7 +311,7 @@ include '../../includes/theme_system.php';
                                     <div class="text-right">
                                         <h3 class="font-weight-bold text-dark mb-0">
                                             <?php
-                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'PENDING' AND user_id = '".$_SESSION['user_id']."'";
+                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'PENDING' AND user_id = '".$_SESSION['user_id']."' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                 $result = $conn->query($query);
                                                 if ($row = $result->fetch_assoc()) {
                                                     echo $row['total'];
@@ -325,7 +337,7 @@ include '../../includes/theme_system.php';
                                     <div class="text-right">
                                         <h3 class="font-weight-bold text-dark mb-0">
                                             <?php
-                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'INVESTIGATING' AND user_id = '".$_SESSION['user_id']."'";
+                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'INVESTIGATING' AND user_id = '".$_SESSION['user_id']."' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                 $result = $conn->query($query);
                                                 if ($row = $result->fetch_assoc()) {
                                                     echo $row['total'];
@@ -351,7 +363,7 @@ include '../../includes/theme_system.php';
                                     <div class="text-right">
                                         <h3 class="font-weight-bold text-dark mb-0">
                                             <?php
-                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'RESOLVED' AND user_id = '".$_SESSION['user_id']."'";
+                                                $query = "SELECT count(id) as total FROM incident WHERE status = 'RESOLVED' AND user_id = '".$_SESSION['user_id']."' AND (user_deleted IS NULL OR user_deleted = 0)";
                                                 $result = $conn->query($query);
                                                 if ($row = $result->fetch_assoc()) {
                                                     echo $row['total'];
@@ -388,7 +400,7 @@ include '../../includes/theme_system.php';
                         </thead>
                         <tbody>
                           <?php
-                          $query = "SELECT * FROM incident WHERE user_id ='".$_SESSION['user_id']."'";
+                          $query = "SELECT * FROM incident WHERE user_id ='".$_SESSION['user_id']."' AND (user_deleted IS NULL OR user_deleted = 0)";
                           $result = $conn->query($query);
                           while ($row = $result->fetch_assoc()) {
                               $color = "secondary";
@@ -459,11 +471,11 @@ include '../../includes/theme_system.php';
                 animation: float 3s ease-in-out infinite;
             }
             
-            .pnp-logo-wrapper {
+            .pnp-logo-wrapper, .pnp-main-logo-wrapper {
                 transition: all 0.3s ease;
             }
             
-            .pnp-logo-wrapper:hover {
+            .pnp-logo-wrapper:hover, .pnp-main-logo-wrapper:hover {
                 transform: scale(1.05);
                 box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             }
@@ -606,48 +618,170 @@ include '../../includes/theme_system.php';
             }
             
             @media (max-width: 768px) {
+                /* Mobile-first responsive design - Proper sizing, not shrinking */
+                .hero-section {
+                    min-height: 100vh !important;
+                    padding: 2rem 0 !important;
+                }
+                
                 .display-3 {
-                    font-size: 2.5rem !important;
+                    font-size: 3rem !important;
+                    line-height: 1.2;
+                    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
                 }
+                
                 .lead {
-                    font-size: 1.2rem !important;
+                    font-size: 1.4rem !important;
+                    line-height: 1.5;
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
                 }
+                
                 .hero-buttons .btn {
-                    margin-bottom: 1rem;
+                    margin-bottom: 1.5rem;
                     display: block;
                     width: 100%;
                     margin-right: 0 !important;
+                    font-size: 1.2rem !important;
+                    padding: 1rem 1.5rem !important;
+                    min-height: 56px;
                 }
-                .hero-image-wrapper,
-                .pnp-logo-wrapper {
-                    width: 150px !important;
-                    height: 150px !important;
+                
+                /* Better text sizes for mobile readability */
+                h1 {
+                    font-size: 2.8rem !important;
+                    line-height: 1.2;
                 }
-                .hero-image-wrapper img,
-                .pnp-logo-wrapper img {
-                    width: 120px !important;
-                    height: 120px !important;
-                }
-                .col-lg-7 {
-                    text-align: center;
-                    margin-bottom: 2rem;
-                }
-                .col-lg-5 .row {
-                    justify-content: center !important;
-                }
-                .col-6 {
+                
+                h2 {
+                    font-size: 2.2rem !important;
+                    line-height: 1.3;
                     margin-bottom: 1.5rem !important;
                 }
                 
-                /* Phone Prototype Mobile */
+                h3 {
+                    font-size: 1.8rem !important;
+                    line-height: 1.3;
+                }
+                
+                h4 {
+                    font-size: 1.6rem !important;
+                    line-height: 1.3;
+                }
+                
+                h5 {
+                    font-size: 1.4rem !important;
+                    line-height: 1.3;
+                }
+                
+                h6 {
+                    font-size: 1.2rem !important;
+                    line-height: 1.3;
+                }
+                
+                p {
+                    font-size: 1.2rem !important;
+                    line-height: 1.6;
+                }
+                
+                .small {
+                    font-size: 1rem !important;
+                }
+                
+                /* Card improvements */
+                .card-body {
+                    padding: 2rem !important;
+                }
+                
+                .card-title {
+                    font-size: 1.6rem !important;
+                    margin-bottom: 1rem !important;
+                }
+                
+                .card-text {
+                    font-size: 1.2rem !important;
+                    line-height: 1.6;
+                }
+                
+                /* Stats card improvements */
+                .icon-circle {
+                    width: 60px !important;
+                    height: 60px !important;
+                }
+                
+                .icon-circle i {
+                    font-size: 1.5rem !important;
+                }
+                
+                /* Table improvements */
+                .table {
+                    font-size: 1.1rem !important;
+                }
+                
+                .table th,
+                .table td {
+                    padding: 1rem 0.75rem !important;
+                    vertical-align: middle;
+                }
+                
+                .table-responsive {
+                    font-size: 1.1rem;
+                }
+                
+                .btn-sm {
+                    font-size: 1rem !important;
+                    padding: 0.6rem 1rem !important;
+                    min-height: 44px;
+                }
+                
+                /* Badge improvements */
+                .badge {
+                    font-size: 1rem !important;
+                    padding: 0.6rem 1rem !important;
+                }
+                
+                /* Container improvements */
+                .container {
+                    padding-left: 1.5rem;
+                    padding-right: 1.5rem;
+                }
+                
+                .py-5 {
+                    padding-top: 2.5rem !important;
+                    padding-bottom: 2.5rem !important;
+                }
+                
+                .mb-4 {
+                    margin-bottom: 2rem !important;
+                }
+                
+                .mb-5 {
+                    margin-bottom: 2.5rem !important;
+                }
+                
+                /* Feature list improvements */
+                .feature-item {
+                    margin-bottom: 1.5rem !important;
+                }
+                
+                .feature-icon {
+                    width: 50px !important;
+                    height: 50px !important;
+                    margin-right: 1rem !important;
+                }
+                
+                .feature-icon i {
+                    font-size: 1.2rem !important;
+                }
+                
+                /* Phone prototype adjustments */
                 .circle-bg {
-                    width: 300px !important;
-                    height: 300px !important;
+                    width: 350px !important;
+                    height: 350px !important;
                 }
                 
                 .phone-frame {
-                    width: 200px !important;
-                    height: 400px !important;
+                    width: 220px !important;
+                    height: 440px !important;
                     padding: 12px !important;
                 }
                 
@@ -655,92 +789,138 @@ include '../../includes/theme_system.php';
                     padding: 12px !important;
                 }
                 
-                .col-lg-5, .col-lg-7 {
+                /* Logo improvements */
+                .hero-image-wrapper,
+                .pnp-logo-wrapper,
+                .pnp-main-logo-wrapper {
+                    width: 120px !important;
+                    height: 120px !important;
+                }
+                
+                .hero-image-wrapper img,
+                .pnp-logo-wrapper img,
+                .pnp-main-logo-wrapper img {
+                    width: 90px !important;
+                    height: 90px !important;
+                }
+                
+                /* General mobile improvements */
+                .col-lg-7 {
+                    text-align: center;
                     margin-bottom: 2rem;
                 }
                 
-                /* General Mobile Adjustments */
-                .hero-section {
-                    min-height: 80vh !important;
-                    padding: 2rem 0;
+                .col-lg-5 .row {
+                    justify-content: center !important;
                 }
                 
-                .container {
-                    padding-left: 15px;
-                    padding-right: 15px;
-                }
-                
-                .py-5 {
-                    padding-top: 2rem !important;
-                    padding-bottom: 2rem !important;
-                }
-                
-                .card-body {
-                    padding: 1rem !important;
-                }
-                
-                .icon-circle {
-                    width: 40px !important;
-                    height: 40px !important;
-                }
-                
-                .icon-circle i {
-                    font-size: 1rem !important;
-                }
-                
-                h2 {
-                    font-size: 1.8rem !important;
-                }
-                
-                h3 {
-                    font-size: 1.5rem !important;
-                }
-                
-                h6 {
-                    font-size: 0.9rem !important;
-                }
-                
-                .table-responsive {
-                    font-size: 0.85rem;
-                }
-                
-                .btn-sm {
-                    font-size: 0.75rem;
-                    padding: 0.25rem 0.5rem;
+                .col-4 {
+                    margin-bottom: 2rem !important;
                 }
             }
             
             @media (max-width: 576px) {
+                /* Extra mobile optimizations */
                 .hero-section {
                     min-height: 100vh;
                     padding: 2rem 0;
                 }
+                
                 .display-3 {
+                    font-size: 2.5rem !important;
+                    line-height: 1.1;
+                }
+                
+                .lead {
+                    font-size: 1.3rem !important;
+                    line-height: 1.5;
+                }
+                
+                h1 {
+                    font-size: 2.2rem !important;
+                }
+                
+                h2 {
                     font-size: 2rem !important;
                 }
-                .lead {
+                
+                h3 {
+                    font-size: 1.6rem !important;
+                }
+                
+                h4 {
+                    font-size: 1.4rem !important;
+                }
+                
+                h5 {
+                    font-size: 1.3rem !important;
+                }
+                
+                h6 {
                     font-size: 1.1rem !important;
                 }
-                .hero-image-wrapper,
-                .pnp-logo-wrapper {
-                    width: 120px !important;
-                    height: 120px !important;
+                
+                /* Better button sizing */
+                .hero-buttons .btn {
+                    font-size: 1.1rem;
+                    padding: 0.9rem 1.3rem;
+                    min-height: 52px;
                 }
-                .hero-image-wrapper img,
-                .pnp-logo-wrapper img {
+                
+                /* Card adjustments */
+                .card-body {
+                    padding: 1.5rem !important;
+                }
+                
+                .icon-circle {
+                    width: 50px !important;
+                    height: 50px !important;
+                }
+                
+                .icon-circle i {
+                    font-size: 1.3rem !important;
+                }
+                
+                /* Table adjustments */
+                .table {
+                    font-size: 1rem !important;
+                }
+                
+                .table th,
+                .table td {
+                    padding: 0.8rem 0.5rem !important;
+                }
+                
+                .btn-sm {
+                    font-size: 0.9rem !important;
+                    padding: 0.5rem 0.8rem !important;
+                    min-height: 40px;
+                }
+                
+                /* Logo adjustments */
+                .hero-image-wrapper,
+                .pnp-logo-wrapper,
+                .pnp-main-logo-wrapper {
                     width: 100px !important;
                     height: 100px !important;
                 }
                 
-                /* Phone Prototype Extra Small */
+                .hero-image-wrapper img,
+                .pnp-logo-wrapper img,
+                .pnp-main-logo-wrapper img {
+                    width: 75px !important;
+                    height: 75px !important;
+                }
+                
+                /* Phone prototype for small screens */
                 .circle-bg {
-                    width: 250px !important;
-                    height: 250px !important;
+                    width: 280px !important;
+                    height: 280px !important;
                 }
                 
                 .phone-frame {
-                    width: 180px !important;
-                    height: 360px !important;
+                    width: 190px !important;
+                    height: 380px !important;
                     padding: 10px !important;
                 }
                 
@@ -752,111 +932,117 @@ include '../../includes/theme_system.php';
                     margin-bottom: 8px !important;
                 }
                 
-                /* Extra Small Device Adjustments */
+                /* Container adjustments */
                 .container {
-                    padding-left: 10px;
-                    padding-right: 10px;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
                 }
                 
                 .py-5 {
-                    padding-top: 1.5rem !important;
-                    padding-bottom: 1.5rem !important;
+                    padding-top: 2rem !important;
+                    padding-bottom: 2rem !important;
                 }
                 
                 .card {
-                    margin-bottom: 1rem !important;
-                }
-                
-                .card-body {
-                    padding: 0.8rem !important;
-                }
-                
-                .icon-circle {
-                    width: 35px !important;
-                    height: 35px !important;
-                }
-                
-                .hero-buttons .btn {
-                    font-size: 0.85rem;
-                    padding: 0.7rem 1.2rem;
-                }
-                
-                h1 {
-                    font-size: 1.8rem !important;
-                }
-                
-                h2 {
-                    font-size: 1.5rem !important;
-                }
-                
-                h3 {
-                    font-size: 1.3rem !important;
-                }
-                
-                .table {
-                    font-size: 0.8rem;
-                }
-                
-                .table th,
-                .table td {
-                    padding: 0.5rem 0.3rem;
+                    margin-bottom: 1.5rem !important;
                 }
                 
                 .col-xl-3 {
-                    margin-bottom: 1rem;
+                    margin-bottom: 1.5rem;
                 }
                 
                 .row {
-                    margin-left: -5px;
-                    margin-right: -5px;
+                    margin-left: -10px;
+                    margin-right: -10px;
                 }
                 
                 .col-xl-3, .col-md-6 {
-                    padding-left: 5px;
-                    padding-right: 5px;
+                    padding-left: 10px;
+                    padding-right: 10px;
                 }
             }
             
             @media (max-width: 400px) {
+                /* Ultra-mobile optimizations for very small screens */
                 .display-3 {
-                    font-size: 1.7rem !important;
+                    font-size: 2.2rem !important;
+                    line-height: 1.1;
                 }
                 
-                .container {
-                    padding-left: 8px;
-                    padding-right: 8px;
+                .lead {
+                    font-size: 1.2rem !important;
                 }
                 
-                .card-body {
-                    padding: 0.6rem !important;
-                }
-                
-                .hero-buttons .btn {
-                    font-size: 0.8rem;
-                    padding: 0.6rem 1rem;
+                h1 {
+                    font-size: 2rem !important;
                 }
                 
                 h2 {
+                    font-size: 1.8rem !important;
+                }
+                
+                h3 {
+                    font-size: 1.5rem !important;
+                }
+                
+                h4 {
                     font-size: 1.3rem !important;
                 }
                 
+                h5 {
+                    font-size: 1.2rem !important;
+                }
+                
                 h6 {
-                    font-size: 0.8rem !important;
+                    font-size: 1rem !important;
+                }
+                
+                .container {
+                    padding-left: 0.8rem;
+                    padding-right: 0.8rem;
+                }
+                
+                .card-body {
+                    padding: 1.2rem !important;
+                }
+                
+                .hero-buttons .btn {
+                    font-size: 1rem;
+                    padding: 0.8rem 1.2rem;
+                    min-height: 48px;
                 }
                 
                 .icon-circle {
-                    width: 30px !important;
-                    height: 30px !important;
+                    width: 45px !important;
+                    height: 45px !important;
+                }
+                
+                .icon-circle i {
+                    font-size: 1.1rem !important;
                 }
                 
                 .phone-frame {
-                    width: 160px !important;
-                    height: 320px !important;
+                    width: 170px !important;
+                    height: 340px !important;
                 }
                 
                 .circle-bg {
-                    width: 200px !important;
-                    height: 200px !important;
+                    width: 250px !important;
+                    height: 250px !important;
+                }
+                
+                .table {
+                    font-size: 0.95rem !important;
+                }
+                
+                .btn-sm {
+                    font-size: 0.85rem !important;
+                    padding: 0.4rem 0.7rem !important;
+                }
+                
+                .badge {
+                    font-size: 0.9rem !important;
+                    padding: 0.4rem 0.8rem !important;
                 }
             }
             

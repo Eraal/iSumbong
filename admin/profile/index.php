@@ -79,10 +79,10 @@ $stmt->close();
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Admin Profile - iReport System">
-    <meta name="author" content="iReport">
+    <meta name="description" content="Admin Profile - iSumbong System">
+    <meta name="author" content="iSumbong">
 
-    <title>Admin Profile - iReport</title>
+    <title>Admin Profile - iSumbong</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png"/>

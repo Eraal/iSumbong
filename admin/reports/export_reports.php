@@ -19,31 +19,53 @@ if(logged_in()){
     
     $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
     
-    // Get reports with user information
-    $query = "SELECT 
-                i.id,
-                i.title,
-                i.category,
-                i.status,
-                i.date as incident_date,
-                i.description,
-                i.system_affected,
-                i.severity_level,
-                i.full_name,
-                i.role,
-                i.department,
-                i.email,
-                i.phone,
-                i.estimated_impact,
-                i.critical_infra,
-                i.observed_impact,
-                i.actions_taken,
-                i.incident_contained,
-                i.notified,
-                i.additional_info,
-                i.created_at,
-                u.name as user_name,
-                u.email as user_email
+    // First, let's check what columns actually exist in the incident table
+    $columns_check = mysqli_query($conn, "DESCRIBE incident");
+    $available_columns = [];
+    while($col = mysqli_fetch_assoc($columns_check)) {
+        $available_columns[] = $col['Field'];
+    }
+    
+    // Build the SELECT clause based on available columns
+    $select_fields = [
+        'i.id',
+        'i.title',
+        'i.category',
+        'i.status',
+        'i.date as incident_date',
+        'i.description',
+        'i.system_affected',
+        'i.severity_level',
+        'i.full_name',
+        'i.email',
+        'i.created_at'
+    ];
+    
+    // Add optional columns only if they exist
+    $optional_fields = [
+        'role' => 'i.role',
+        'department' => 'i.department', 
+        'phone' => 'i.phone',
+        'estimated_impact' => 'i.estimated_impact',
+        'critical_infra' => 'i.critical_infra',
+        'observed_impact' => 'i.observed_impact',
+        'actions_taken' => 'i.actions_taken',
+        'incident_contained' => 'i.incident_contained',
+        'notified' => 'i.notified',
+        'additional_info' => 'i.additional_info'
+    ];
+    
+    foreach($optional_fields as $field_name => $field_query) {
+        if(in_array($field_name, $available_columns)) {
+            $select_fields[] = $field_query;
+        }
+    }
+    
+    // Add user fields
+    $select_fields[] = 'u.name as user_name';
+    $select_fields[] = 'u.email as user_email';
+    
+    $query = "SELECT " . implode(', ', $select_fields) . "
               FROM incident i 
               LEFT JOIN users u ON i.user_id = u.user_id 
               $whereClause 
@@ -103,20 +125,20 @@ if(logged_in()){
             echo '<td class="text">' . htmlspecialchars(ucfirst(str_replace('_', ' ', $row['status']))) . '</td>';
             echo '<td class="text">' . htmlspecialchars($row['full_name']) . '</td>';
             echo '<td class="text">' . htmlspecialchars($row['email']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['role']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['department']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['phone']) . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['role']) ? $row['role'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['department']) ? $row['department'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['phone']) ? $row['phone'] : 'N/A') . '</td>';
             echo '<td class="text">' . ($row['incident_date'] ? date('M j, Y g:i A', strtotime($row['incident_date'])) : 'Not specified') . '</td>';
             echo '<td class="text">' . htmlspecialchars($row['system_affected']) . '</td>';
             echo '<td class="text">' . htmlspecialchars($row['severity_level']) . '</td>';
             echo '<td class="text">' . htmlspecialchars($row['description']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['estimated_impact']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['critical_infra']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['observed_impact']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['actions_taken']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['incident_contained']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['notified']) . '</td>';
-            echo '<td class="text">' . htmlspecialchars($row['additional_info']) . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['estimated_impact']) ? $row['estimated_impact'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['critical_infra']) ? $row['critical_infra'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['observed_impact']) ? $row['observed_impact'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['actions_taken']) ? $row['actions_taken'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['incident_contained']) ? $row['incident_contained'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['notified']) ? $row['notified'] : 'N/A') . '</td>';
+            echo '<td class="text">' . htmlspecialchars(isset($row['additional_info']) ? $row['additional_info'] : 'N/A') . '</td>';
             echo '<td class="text">' . date('M j, Y g:i A', strtotime($row['created_at'])) . '</td>';
             echo '</tr>';
         }
@@ -168,20 +190,20 @@ if(logged_in()){
                 ucfirst(str_replace('_', ' ', $row['status'])),
                 $row['full_name'],
                 $row['email'],
-                $row['role'],
-                $row['department'],
-                $row['phone'],
+                isset($row['role']) ? $row['role'] : 'N/A',
+                isset($row['department']) ? $row['department'] : 'N/A',
+                isset($row['phone']) ? $row['phone'] : 'N/A',
                 $row['incident_date'] ? date('M j, Y g:i A', strtotime($row['incident_date'])) : 'Not specified',
                 $row['system_affected'],
                 $row['severity_level'],
                 $row['description'],
-                $row['estimated_impact'],
-                $row['critical_infra'],
-                $row['observed_impact'],
-                $row['actions_taken'],
-                $row['incident_contained'],
-                $row['notified'],
-                $row['additional_info'],
+                isset($row['estimated_impact']) ? $row['estimated_impact'] : 'N/A',
+                isset($row['critical_infra']) ? $row['critical_infra'] : 'N/A',
+                isset($row['observed_impact']) ? $row['observed_impact'] : 'N/A',
+                isset($row['actions_taken']) ? $row['actions_taken'] : 'N/A',
+                isset($row['incident_contained']) ? $row['incident_contained'] : 'N/A',
+                isset($row['notified']) ? $row['notified'] : 'N/A',
+                isset($row['additional_info']) ? $row['additional_info'] : 'N/A',
                 date('M j, Y g:i A', strtotime($row['created_at']))
             ]);
         }

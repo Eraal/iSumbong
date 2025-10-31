@@ -395,7 +395,7 @@ if(logged_in()){
                                 Cybersecurity <span style="color: #3498db;">Threats</span>
                             </h1>
                             <p class="lead mb-5" style="font-size: 1.3rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">
-                                Learn about common cyber threats and how to protect yourself from them.
+                                Alamin ang mga common cyber threats at kung paano protektahan ang inyong sarili laban dito.
                             </p>
                             
                             <!-- Action Buttons -->
@@ -404,7 +404,7 @@ if(logged_in()){
                                     <i class="fas fa-home mr-2"></i>Back to Dashboard
                                 </a>
                                 <a href="#threats-section" class="btn btn-danger btn-lg px-4 py-3" style="border-radius: 50px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                                    <i class="fas fa-shield-alt mr-2"></i>Learn About Threats
+                                    <i class="fas fa-shield-alt mr-2"></i>Alamin ang mga Threats
                                 </a>
                             </div>
                         </div>
@@ -417,8 +417,8 @@ if(logged_in()){
                 <div class="container">
                     <div class="row text-center mb-5">
                         <div class="col-12">
-                            <h2 class="font-weight-bold text-dark mb-3">Cybersecurity Incidents</h2>
-                            <p class="text-muted">Understand the most common online threats and how to avoid them.</p>
+                            <h2 class="font-weight-bold text-dark mb-3">Mga Cybersecurity Incidents</h2>
+                            <p class="text-muted">Intindihin ang mga pinakacommon na online threats at kung paano iwasan ang mga ito.</p>
                         </div>
                     </div>
                     
@@ -430,9 +430,9 @@ if(logged_in()){
                                     <i class="fas fa-envelope text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Phishing</h4>
-                                <p class="text-muted mb-4">Tricking users to reveal sensitive info via fake messages.</p>
+                                <p class="text-muted mb-4">Paglilinlang sa mga users para makuha ang sensitive info sa pamamagitan ng fake messages.</p>
                                 <a href="#" class="btn btn-outline-danger btn-sm view-details-btn" data-threat="phishing">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -444,9 +444,9 @@ if(logged_in()){
                                     <i class="fas fa-bug text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Malware</h4>
-                                <p class="text-muted mb-4">Malicious software that harms or exploits.</p>
+                                <p class="text-muted mb-4">Malicious software na nakakasakit o nag-e-exploit sa computer.</p>
                                 <a href="#" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="malware">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -458,9 +458,9 @@ if(logged_in()){
                                     <i class="fas fa-lock-open text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Unauthorized Access</h4>
-                                <p class="text-muted mb-4">Illegal access to accounts or systems.</p>
+                                <p class="text-muted mb-4">Illegal na pagpasok sa mga accounts o systems.</p>
                                 <a href="#" class="btn btn-outline-primary btn-sm view-details-btn" data-threat="unauthorized">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -472,9 +472,9 @@ if(logged_in()){
                                     <i class="fas fa-user-slash text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Cyberbullying</h4>
-                                <p class="text-muted mb-4">Harassment or intimidation through digital platforms.</p>
+                                <p class="text-muted mb-4">Pang-aapi o pag-intimidate sa pamamagitan ng digital platforms.</p>
                                 <a href="#" class="btn btn-outline-secondary btn-sm view-details-btn" data-threat="cyberbullying">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -486,9 +486,9 @@ if(logged_in()){
                                     <i class="fas fa-id-card text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Identity Theft</h4>
-                                <p class="text-muted mb-4">Stealing personal information to impersonate.</p>
+                                <p class="text-muted mb-4">Pagnanakaw ng personal information para magpanggap.</p>
                                 <a href="#" class="btn btn-outline-success btn-sm view-details-btn" data-threat="identity">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -500,9 +500,9 @@ if(logged_in()){
                                     <i class="fas fa-credit-card text-white fa-2x"></i>
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Online Fraud</h4>
-                                <p class="text-muted mb-4">Deceptive schemes to steal money or valuables online.</p>
+                                <p class="text-muted mb-4">Mga deceptive schemes para magnakaw ng pera o valuables online.</p>
                                 <a href="#" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="fraud">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -515,8 +515,8 @@ if(logged_in()){
                 <div class="container">
                     <div class="row text-center mb-5">
                         <div class="col-12">
-                            <h2 class="font-weight-bold text-dark mb-3">Protection Guidelines</h2>
-                            <p class="text-muted">Essential security practices to keep you safe online</p>
+                            <h2 class="font-weight-bold text-dark mb-3">Mga Gabay sa Protection</h2>
+                            <p class="text-muted">Essential security practices para manatiling safe online</p>
                         </div>
                     </div>
                     
@@ -526,8 +526,8 @@ if(logged_in()){
                                 <div class="tip-icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(45deg, #3498db, #2980b9); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
                                     <i class="fas fa-key text-white fa-lg"></i>
                                 </div>
-                                <h5 class="font-weight-bold mb-3">Strong Passwords</h5>
-                                <p class="text-muted small">Use complex passwords with numbers, symbols, and letters. Enable two-factor authentication.</p>
+                                <h5 class="font-weight-bold mb-3">Malakas na Passwords</h5>
+                                <p class="text-muted small">Gumamit ng complex passwords na may numbers, symbols, at letters. I-enable ang two-factor authentication.</p>
                             </div>
                         </div>
                         
@@ -536,8 +536,8 @@ if(logged_in()){
                                 <div class="tip-icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(45deg, #e74c3c, #c0392b); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
                                     <i class="fas fa-eye text-white fa-lg"></i>
                                 </div>
-                                <h5 class="font-weight-bold mb-3">Verify Sources</h5>
-                                <p class="text-muted small">Always verify email senders and website URLs before clicking links or downloading files.</p>
+                                <h5 class="font-weight-bold mb-3">I-verify ang Sources</h5>
+                                <p class="text-muted small">Laging i-verify ang email senders at website URLs bago mag-click ng links o mag-download ng files.</p>
                             </div>
                         </div>
                         
@@ -546,8 +546,8 @@ if(logged_in()){
                                 <div class="tip-icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(45deg, #27ae60, #229954); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
                                     <i class="fas fa-sync text-white fa-lg"></i>
                                 </div>
-                                <h5 class="font-weight-bold mb-3">Keep Updated</h5>
-                                <p class="text-muted small">Regularly update your software, operating system, and antivirus programs.</p>
+                                <h5 class="font-weight-bold mb-3">Palaging I-update</h5>
+                                <p class="text-muted small">Regular na i-update ang inyong software, operating system, at antivirus programs.</p>
                             </div>
                         </div>
                         
@@ -556,8 +556,8 @@ if(logged_in()){
                                 <div class="tip-icon mb-3" style="width: 60px; height: 60px; background: linear-gradient(45deg, #f39c12, #e67e22); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
                                     <i class="fas fa-exclamation-triangle text-white fa-lg"></i>
                                 </div>
-                                <h5 class="font-weight-bold mb-3">Report Incidents</h5>
-                                <p class="text-muted small">Immediately report any suspicious activity or security incidents to the appropriate authorities.</p>
+                                <h5 class="font-weight-bold mb-3">I-report ang mga Incidents</h5>
+                                <p class="text-muted small">Agad na i-report ang anumang suspicious activity o security incidents sa appropriate authorities.</p>
                             </div>
                         </div>
                     </div>
@@ -674,7 +674,7 @@ if(logged_in()){
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <a href="../incident/register.php" class="btn btn-danger">Report Incident</a>
+                    <a href="../incident/register.php" class="btn btn-danger">I-report ang Incident</a>
                 </div>
             </div>
         </div>
@@ -721,24 +721,24 @@ if(logged_in()){
                 title: "Phishing Attacks",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Phishing?</h6>
-                        <p>Phishing is a cybercrime where attackers impersonate legitimate organizations to steal sensitive information like passwords, credit card numbers, or personal data.</p>
+                        <h6 class="font-weight-bold">Ano ang Phishing?</h6>
+                        <p>Ang phishing ay isang cybercrime kung saan ang mga attacker ay nagpapanggap na legitimate na organization para magnakaw ng sensitive na impormasyon tulad ng passwords, credit card numbers, o personal data.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Common Signs:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Common Signs:</h6>
                         <ul>
-                            <li>Urgent or threatening language</li>
-                            <li>Suspicious sender addresses</li>
-                            <li>Generic greetings</li>
-                            <li>Requests for sensitive information</li>
-                            <li>Suspicious links or attachments</li>
+                            <li>Urgent o threatening na wika</li>
+                            <li>Suspicious na sender addresses</li>
+                            <li>Generic na pagbati ("Dear Customer")</li>
+                            <li>Humihingi ng sensitive na information</li>
+                            <li>Suspicious na links o attachments</li>
                         </ul>
                         
                         <h6 class="font-weight-bold mt-3">Protection Tips:</h6>
                         <ul>
-                            <li>Verify sender identity through official channels</li>
-                            <li>Don't click suspicious links</li>
-                            <li>Check URLs carefully</li>
-                            <li>Use email filters and security software</li>
+                            <li>I-verify ang sender identity sa official channels</li>
+                            <li>Huwag mag-click ng suspicious links</li>
+                            <li>Tingnan mabuti ang URLs</li>
+                            <li>Gumamit ng email filters at security software</li>
                         </ul>
                     </div>
                 `
@@ -747,23 +747,23 @@ if(logged_in()){
                 title: "Malware Threats",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Malware?</h6>
-                        <p>Malware (malicious software) is designed to damage, disrupt, or gain unauthorized access to computer systems.</p>
+                        <h6 class="font-weight-bold">Ano ang Malware?</h6>
+                        <p>Ang malware (malicious software) ay ginawa para sirain, guluhin, o makakuha ng unauthorized access sa computer systems.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Types of Malware:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Uri ng Malware:</h6>
                         <ul>
-                            <li>Viruses - Self-replicating programs</li>
-                            <li>Trojans - Disguised malicious software</li>
-                            <li>Ransomware - Encrypts files for ransom</li>
-                            <li>Spyware - Secretly monitors activity</li>
-                            <li>Adware - Displays unwanted advertisements</li>
+                            <li>Viruses - Mga programa na kumakalat mag-isa</li>
+                            <li>Trojans - Nakatagong malicious software</li>
+                            <li>Ransomware - Nag-e-encrypt ng files para sa ransom</li>
+                            <li>Spyware - Lihim na nag-monitor ng activity</li>
+                            <li>Adware - Nagpapakita ng hindi gustong advertisements</li>
                         </ul>
                         
                         <h6 class="font-weight-bold mt-3">Prevention:</h6>
                         <ul>
-                            <li>Install reputable antivirus software</li>
-                            <li>Keep software updated</li>
-                            <li>Avoid suspicious downloads</li>
+                            <li>Mag-install ng trusted antivirus software</li>
+                            <li>I-update ang software palagi</li>
+                            <li>Iwasan ang suspicious downloads</li>
                             <li>Regular system scans</li>
                         </ul>
                     </div>
@@ -773,24 +773,24 @@ if(logged_in()){
                 title: "Unauthorized Access",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Unauthorized Access?</h6>
-                        <p>Unauthorized access occurs when someone gains access to a computer system, network, or data without permission.</p>
+                        <h6 class="font-weight-bold">Ano ang Unauthorized Access?</h6>
+                        <p>Ang unauthorized access ay nangyayari kapag may taong nakakuha ng access sa computer system, network, o data nang walang permission.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Common Methods:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Common Methods:</h6>
                         <ul>
                             <li>Password attacks (brute force, dictionary)</li>
                             <li>Social engineering</li>
-                            <li>Exploiting security vulnerabilities</li>
-                            <li>Physical access to devices</li>
+                            <li>Pag-exploit ng security vulnerabilities</li>
+                            <li>Physical access sa mga devices</li>
                             <li>Man-in-the-middle attacks</li>
                         </ul>
                         
                         <h6 class="font-weight-bold mt-3">Security Measures:</h6>
                         <ul>
-                            <li>Strong, unique passwords</li>
+                            <li>Malakas at unique na passwords</li>
                             <li>Two-factor authentication</li>
                             <li>Regular security updates</li>
-                            <li>Access control and monitoring</li>
+                            <li>Access control at monitoring</li>
                             <li>Secure physical access</li>
                         </ul>
                     </div>
@@ -800,25 +800,25 @@ if(logged_in()){
                 title: "Cyberbullying",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Cyberbullying?</h6>
-                        <p>Cyberbullying involves using digital platforms to harass, intimidate, or threaten individuals, often repeatedly and with intent to harm.</p>
+                        <h6 class="font-weight-bold">Ano ang Cyberbullying?</h6>
+                        <p>Ang cyberbullying ay paggamit ng digital platforms para mang-harass, mang-intimidate, o mang-threaten ng mga tao, madalas na paulit-ulit at may intensyon na makasakit.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Forms of Cyberbullying:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Uri ng Cyberbullying:</h6>
                         <ul>
-                            <li>Harassment through messages</li>
-                            <li>Public shaming or humiliation</li>
-                            <li>Spreading false information</li>
-                            <li>Exclusion from online groups</li>
-                            <li>Identity theft for harassment</li>
+                            <li>Harassment sa pamamagitan ng messages</li>
+                            <li>Public shaming o pagkakahiya</li>
+                            <li>Pagkalat ng fake na impormasyon</li>
+                            <li>Pag-exclude sa online groups</li>
+                            <li>Identity theft para sa harassment</li>
                         </ul>
                         
-                        <h6 class="font-weight-bold mt-3">How to Respond:</h6>
+                        <h6 class="font-weight-bold mt-3">Paano Tumugon:</h6>
                         <ul>
-                            <li>Document evidence</li>
-                            <li>Block the aggressor</li>
-                            <li>Report to platform administrators</li>
-                            <li>Seek support from trusted individuals</li>
-                            <li>Consider legal action if necessary</li>
+                            <li>I-document ang evidence</li>
+                            <li>I-block ang aggressor</li>
+                            <li>I-report sa platform administrators</li>
+                            <li>Humingi ng support sa trusted na tao</li>
+                            <li>Isaalang-alang ang legal action kung kailangan</li>
                         </ul>
                     </div>
                 `
@@ -827,10 +827,10 @@ if(logged_in()){
                 title: "Identity Theft",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Identity Theft?</h6>
-                        <p>Identity theft occurs when someone steals personal information to impersonate another person for financial gain or other malicious purposes.</p>
+                        <h6 class="font-weight-bold">Ano ang Identity Theft?</h6>
+                        <p>Ang identity theft ay nangyayari kapag may nagnakaw ng personal information para magpanggap na ibang tao para sa financial gain o iba pang masasamang layunin.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Targeted Information:</h6>
+                        <h6 class="font-weight-bold mt-3">Target na Information:</h6>
                         <ul>
                             <li>Social Security numbers</li>
                             <li>Credit card information</li>
@@ -841,11 +841,11 @@ if(logged_in()){
                         
                         <h6 class="font-weight-bold mt-3">Protection Strategies:</h6>
                         <ul>
-                            <li>Monitor credit reports regularly</li>
-                            <li>Secure personal documents</li>
-                            <li>Be cautious with personal information online</li>
-                            <li>Use identity monitoring services</li>
-                            <li>Report suspicious activity immediately</li>
+                            <li>I-monitor ang credit reports regularly</li>
+                            <li>I-secure ang personal documents</li>
+                            <li>Mag-ingat sa personal information online</li>
+                            <li>Gumamit ng identity monitoring services</li>
+                            <li>I-report agad ang suspicious activity</li>
                         </ul>
                     </div>
                 `
@@ -854,10 +854,10 @@ if(logged_in()){
                 title: "Online Fraud",
                 content: `
                     <div class="threat-detail">
-                        <h6 class="font-weight-bold">What is Online Fraud?</h6>
-                        <p>Online fraud involves deceptive schemes conducted over the internet to steal money, personal information, or other valuables from victims.</p>
+                        <h6 class="font-weight-bold">Ano ang Online Fraud?</h6>
+                        <p>Ang online fraud ay mga deceptive schemes na ginagawa sa internet para magnakaw ng pera, personal information, o iba pang valuable things sa mga victims.</p>
                         
-                        <h6 class="font-weight-bold mt-3">Common Types:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Common Types:</h6>
                         <ul>
                             <li>Credit card fraud</li>
                             <li>Investment scams</li>
@@ -866,13 +866,13 @@ if(logged_in()){
                             <li>Advance fee fraud</li>
                         </ul>
                         
-                        <h6 class="font-weight-bold mt-3">Red Flags:</h6>
+                        <h6 class="font-weight-bold mt-3">Mga Red Flags:</h6>
                         <ul>
-                            <li>Too-good-to-be-true offers</li>
-                            <li>Pressure to act quickly</li>
-                            <li>Requests for upfront payments</li>
-                            <li>Unsolicited contact</li>
-                            <li>Poor grammar or spelling</li>
+                            <li>Mga offer na "too good to be true"</li>
+                            <li>Pressure na mag-act agad</li>
+                            <li>Humihingi ng upfront payments</li>
+                            <li>Hindi mo hiniling na contact</li>
+                            <li>Poor grammar o spelling</li>
                         </ul>
                     </div>
                 `

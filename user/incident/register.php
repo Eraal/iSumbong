@@ -3,19 +3,7 @@ include('../../connectMySql.php');
 include '../../loginverification.php';
 
 // Load environment variables
-function loadEnv($path) {
-    if (!file_exists($path)) {
-        return false;
-    }
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
-        list($name, $value) = explode('=', $line, 2);
-        $_ENV[trim($name)] = trim($value);
-    }
-    return true;
-}
-
+require_once('../../includes/env_loader.php');
 loadEnv('../../.env');
 
 if (logged_in()) {
@@ -24,18 +12,13 @@ if (logged_in()) {
         $category = "";
         $date = $_POST['date'];
         $description = $_POST['description'] . "\n\nLocation: " . $_POST['location'] . "\nReporter Address: " . ($_POST['address'] ?? ''); // Include both location and address in description
-        $system_affected = $_POST['location']; // Map location to system_affected
+        $location = $_POST['location']; // Store location for database
+        $address = $_POST['address'] ?? ''; // Store address with fallback
         $severity_level = "";
         $full_name = $_POST['full_name'];
         $email = $_POST['email'];
         $phone = $_POST['phone'] ?? '';
-        $systems_affected = ''; // Removed from form
-        $estimated_impact = ''; // Removed from form  
-        $critical_infra = ''; // Removed from form
-        $observed_impact = ''; // Removed from form
-        $actions_taken = $_POST['actions_taken'] ?? ''; // Handle undefined key
-        $incident_contained = ''; // Removed from form
-        $notified = ''; // Removed from form
+        $notified = ''; // Set default value for notified field
         $evidence_logs = isset($_POST['evidence_logs']) ? 1 : 0;
         $evidence_screenshots = isset($_POST['evidence_screenshots']) ? 1 : 0;
         $evidence_email = isset($_POST['evidence_email']) ? 1 : 0;
@@ -45,10 +28,10 @@ if (logged_in()) {
         $suggestion = "";
         $table = "incident";
 
-        $apiKey = $_ENV['OPENAI_API_KEY'] ?? '';
-        
-        if (empty($apiKey)) {
-            echo "❌ API key not configured.";
+        // Get API key from environment variables
+        $apiKey = env('OPENAI_API_KEY');
+        if (!$apiKey) {
+            echo "❌ OpenAI API key not found in environment variables.";
             exit;
         }
         
@@ -112,13 +95,14 @@ if (logged_in()) {
         } 
 
 
-        // Prepare prompt for categorization and suggestion
 
 
-        $apiKey = $_ENV['OPENAI_API_KEY'] ?? '';
-        
-        if (empty($apiKey)) {
-            echo "❌ API key not configured.";
+
+
+        // Get API key from environment variables for second API call
+        $apiKey = env('OPENAI_API_KEY');
+        if (!$apiKey) {
+            echo "❌ OpenAI API key not found in environment variables.";
             exit;
         }
 
@@ -140,7 +124,7 @@ if (logged_in()) {
         {
         \"category\": \" \", Based sa title at description, identify kung anong cybersecurity category ito.,
         \"severity_level\": \"Low | Medium | High | Critical\",
-        \"suggestion\": \"Preventive measures (paano maiwasan / how to avoid), bullet points na may paliwanag bawat isa.\\n\\n If it happens / If it happens, ilagay ang dapat gawin step-by-step base sa incident, gamit ang parehong language na ginamit sa Title at Description.\"
+        \"suggestion\": \"Preventive measures (paano maiwasan / how to avoid), bullet points na may paliwanag bawat isa.\\n\\n If it happens / If it happens, ilagay ang dapat gawin step-by-step, gamit ang parehong language na ginamit sa Title at Description.\"
         }
         ";
 
@@ -153,6 +137,7 @@ if (logged_in()) {
                 ["role" => "user", "content" => $prompt]
             ],
         ];
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             "Content-Type: application/json",
@@ -171,7 +156,7 @@ if (logged_in()) {
             if (isset($result['error'])) {
                 echo "API Error: " . $result['error']['message'];
             } elseif (isset($result['choices'][0]['message']['content'])) {
-                $content = trim($result['choices'][0]['message']['content]);
+                $content = trim($result['choices'][0]['message']['content']);
 
                 $jsonData = json_decode($content, true);
 
@@ -196,14 +181,27 @@ if (logged_in()) {
                         $suggestion
                     );
 
-                    $suggestion = htmlspecialchars($suggestion, ENT_QUOTES, 'UTF-8');
+                    // Remove the htmlspecialchars that was causing HTML encoding issues
+                    // $suggestion = htmlspecialchars($suggestion, ENT_QUOTES, 'UTF-8');
                 } else {
-                    echo "Unexpected response:<br>";
-                    echo "<pre>" . htmlspecialchars($content) . "</pre>";
+                    // If JSON parsing fails, set default values instead of showing error
+                    $category = "General Security";
+                    $severity_level = "Medium";
+                    $suggestion = "Please review this incident and take appropriate security measures.";
+                    
+                    // Optionally log the parsing issue for debugging (comment out in production)
+                    // echo "JSON parsing failed. Using default values.<br>";
+                    // echo "<pre>" . htmlspecialchars($content) . "</pre>";
                 }
             } else {
-                echo "Unexpected response:<br>";
-                echo "<pre>" . print_r($result, true) . "</pre>";
+                // If no content in API response, use default values
+                $category = "General Security";
+                $severity_level = "Medium";
+                $suggestion = "Please review this incident and take appropriate security measures.";
+                
+                // Optionally log the API issue for debugging (comment out in production)
+                // echo "No content in API response. Using default values.<br>";
+                // echo "<pre>" . print_r($result, true) . "</pre>";
             }
         }
 
@@ -212,20 +210,16 @@ if (logged_in()) {
 
         // Use prepared statement to prevent SQL injection
         $sql = "INSERT INTO $table (
-            title, category, date, description, system_affected, severity_level,
-            full_name, email, phone,
-            systems_affected, estimated_impact, critical_infra, observed_impact,
-            actions_taken, incident_contained, notified,
+            title, category, date, description, location, severity_level,
+            full_name, address, email, phone, notified,
             evidence_logs, evidence_screenshots, evidence_email, evidence_other,
-            additional_info, user_id,suggestion
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            additional_info, user_id, suggestion
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssssssssssssssiiiiiss", 
-            $title, $category, $date, $description, $system_affected, $severity_level,
-            $full_name, $email, $phone,
-            $systems_affected, $estimated_impact, $critical_infra, $observed_impact,
-            $actions_taken, $incident_contained, $notified,
+        $stmt->bind_param("sssssssssssiiiisss", 
+            $title, $category, $date, $description, $location, $severity_level,
+            $full_name, $address, $email, $phone, $notified,
             $evidence_logs, $evidence_screenshots, $evidence_email, $evidence_other,
             $additional_info, $user_id, $suggestion
         );
@@ -235,35 +229,64 @@ if (logged_in()) {
         if ($result) {
             $incident_id = $stmt->insert_id;
 
+            // Debug: Log the incident ID
+            error_log("New incident created with ID: " . $incident_id);
+
             if (!empty($_FILES['attachment']['name'][0])) {
                 $upload_dir = "../../uploads/";
+                
+                // Create upload directory if it doesn't exist
+                if (!is_dir($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);
+                }
 
+                $uploaded_files = [];
                 foreach ($_FILES['attachment']['name'] as $key => $name) {
+                    // Skip empty file names or invalid uploads
+                    if (empty($name) || !isset($_FILES['attachment']['tmp_name'][$key])) {
+                        continue;
+                    }
+                    
                     $tmp_name = $_FILES['attachment']['tmp_name'][$key];
                     $file_name = basename($name);
-                    $file_path = $upload_dir . time() . "_" . $file_name;
+                    
+                    // Create unique filename to prevent conflicts
+                    $unique_name = uniqid() . "_" . time() . "_" . $file_name;
+                    $file_path = $upload_dir . $unique_name;
 
-                    if (move_uploaded_file($tmp_name, $file_path)) {
-                        $attachment_sql = "INSERT INTO attachment (incident_id, attachment, filename)
-                                           VALUES ('$incident_id', '$file_path', '$file_name')";
-                        mysqli_query($conn, $attachment_sql);
+                    // Validate file upload
+                    if (is_uploaded_file($tmp_name) && move_uploaded_file($tmp_name, $file_path)) {
+                        // Use prepared statement for security
+                        $attachment_sql = "INSERT INTO attachment (incident_id, attachment, filename) VALUES (?, ?, ?)";
+                        $attachment_stmt = $conn->prepare($attachment_sql);
+                        $attachment_stmt->bind_param("iss", $incident_id, $file_path, $file_name);
+                        $attachment_stmt->execute();
+                        $attachment_stmt->close();
+                        
+                        $uploaded_files[] = $file_name;
+                        error_log("Uploaded file: " . $file_name . " for incident ID: " . $incident_id);
                     }
                 }
+                
+                error_log("Total files uploaded: " . count($uploaded_files) . " - Files: " . implode(", ", $uploaded_files));
             }
 
             $query = "SELECT * FROM admin limit 1";
             $result = $conn->query($query);
             while ($row = $result->fetch_assoc()) {
                 require_once('../../PHPMailer/PHPMailerAutoload.php');
+                require_once('../../gmail_config.php'); // Load email configuration
+                
                 $mail = new PHPMailer;
                 $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->Port = 587;
+                $mail->Host = SMTP_HOST;
+                $mail->Port = SMTP_PORT;
                 $mail->SMTPAuth = true;
-                $mail->Username = 'sendernotifalert@gmail.com';
-                $mail->Password = 'asng husd wqqr xuwp';
-                $mail->setFrom('sendernotifalert@gmail.com', 'iReport');
-                $mail->addReplyTo('sendernotifalert@gmail.com', 'iReport');
+                $mail->Username = SMTP_USERNAME;
+                $mail->Password = SMTP_PASSWORD;
+                $mail->SMTPSecure = SMTP_ENCRYPTION;
+                $mail->setFrom(FROM_EMAIL, FROM_NAME);
+                $mail->addReplyTo(REPLY_TO_EMAIL, FROM_NAME);
                 $mail->addAddress($row['email'], 'Receiver Name');
                 $mail->Subject = 'New Incident Report';
                 $mail->isHTML(true);
@@ -432,7 +455,7 @@ if (logged_in()) {
                                                 
                                                     <div class="form-group mb-3 col-lg-6 col-12">
                                                         <label for="title">Incident Title</label>
-                                                        <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Phishing Email Attempt" required>
+                                                        <input type="text" class="form-control" id="title" name="title" placeholder="e.g., Nabawasan ang laman ng Gcash ko" required>
                                                     </div>
 
                                                     <!-- Date of Incident -->
@@ -444,7 +467,7 @@ if (logged_in()) {
 
                                                     <div class="form-group mb-3 col-lg-6 col-12">
                                                         <label for="title">Location/Address</label>
-                                                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., 123 Main St, Anytown, USA" required>
+                                                        <input type="text" class="form-control" id="location" name="location" placeholder="e.g., 634 L. Deleon St. Brgy. Buhay Siniloan, Laguna" required>
                                                     </div>
 
 
@@ -542,21 +565,10 @@ if (logged_in()) {
                                                         <div class="row mb-3">
                                                             <div class="col-12">
                                                                 <label class="form-label d-block">Evidence Available?</label>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" id="evidenceLogs" name="evidence_logs" value="1">
-                                                                    <label class="form-check-label" for="evidenceLogs">Logs</label>
-                                                                </div>
+                                                            
                                                                 <div class="form-check form-check-inline">
                                                                     <input class="form-check-input" type="checkbox" id="evidenceScreenshots" name="evidence_screenshots" value="1">
                                                                     <label class="form-check-label" for="evidenceScreenshots">Screenshots</label>
-                                                                </div>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" id="evidenceEmail" name="evidence_email" value="1">
-                                                                    <label class="form-check-label" for="evidenceEmail">Email</label>
-                                                                </div>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="checkbox" id="evidenceOther" name="evidence_other" value="1">
-                                                                    <label class="form-check-label" for="evidenceOther">Other</label>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -637,7 +649,34 @@ if (logged_in()) {
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-primary" href="../../logout.php">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="../../vendor/jquery/jquery.min.js"></script>
+    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="../../js/sb-admin-2.min.js"></script>
+
+    
+    <!-- Page level plugins -->
+    <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="../../js/demo/datatables-demo.js"></script>
+    <script>
+      $(function () {
         $("#dataTable").DataTable({
           "responsive": true,
           "autoWidth": false,
