@@ -322,6 +322,62 @@
     }
 </script>
 
+<!-- Account Dropdown Reliable Toggle -->
+<script>
+    // Ensure clicking the Account link doesn't navigate to "#" and reliably toggles the dropdown
+    (function() {
+        function initAccountDropdown() {
+            var toggles = document.querySelectorAll('.nav-item.dropdown > .dropdown-toggle');
+            if (!toggles || toggles.length === 0) return;
+
+            // Remove previous listeners by cloning (safe in case of repeated inits)
+            toggles.forEach(function(toggle) {
+                var newToggle = toggle.cloneNode(true);
+                toggle.parentNode.replaceChild(newToggle, toggle);
+            });
+
+            toggles = document.querySelectorAll('.nav-item.dropdown > .dropdown-toggle');
+
+            toggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var parent = this.closest('.nav-item.dropdown');
+                    var menu = this.nextElementSibling;
+
+                    // Prefer Bootstrap API if available
+                    if (window.jQuery && typeof window.jQuery.fn.dropdown === 'function') {
+                        window.jQuery(this).dropdown('toggle');
+                    } else {
+                        // Fallback toggle
+                        if (parent) parent.classList.toggle('show');
+                        if (menu && menu.classList) menu.classList.toggle('show');
+                    }
+                });
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.nav-item.dropdown')) {
+                    document.querySelectorAll('.nav-item.dropdown').forEach(function(el) {
+                        el.classList.remove('show');
+                    });
+                    document.querySelectorAll('.nav-item.dropdown .dropdown-menu').forEach(function(el) {
+                        el.classList.remove('show');
+                    });
+                }
+            }, { capture: true });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAccountDropdown);
+        } else {
+            initAccountDropdown();
+        }
+    })();
+    </script>
+
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
