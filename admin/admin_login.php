@@ -4,79 +4,58 @@ $error_message = '';
 $success_redirect = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include '../connectMySql.php';
-    
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    
-    if (empty($email) || empty($password)) {
-        $error_message = 'Please enter both email and password.';
-    } else {
-        try {
-            $pdo = new PDO('mysql:host=localhost;dbname=iSUMBONG', $username_server, $password_server);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            // Check for admin user only
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND role = 'admin' AND status = 'ACTIVE'");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-           
-            if ($stmt->rowCount() > 0) {
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                // Verify password
-                $password_valid = false;
-                if (password_verify($password, $row['password'])) {
-                    $password_valid = true;
-                } elseif ($password === $row['password']) {
-                    // Plain text password support for backward compatibility
-                    $password_valid = true;
-                }
-                
-                if ($password_valid) {
-                    // Start session and redirect to admin dashboard
-                    session_start();
-                    $_SESSION['user_id'] = $row['user_id'];
-                    $_SESSION['name'] = $row['name'];
-                    $_SESSION['email'] = $row['email'];
-                    $_SESSION['role'] = $row['role'];
-                    $_SESSION['image'] = $row['image'] ?? null;
-                    
-                    header('Location: dashboard/');
-                    exit;
-                } else {
-                    $error_message = 'Invalid admin credentials!';
-                }
-            } else {
-                // Check legacy admin table as fallback
-                $stmt = $pdo->prepare("SELECT * FROM admin WHERE email = :email AND status = 'ACTIVE'");
-                $stmt->bindParam(':email', $email);
-                $stmt->execute();
-               
-                if ($stmt->rowCount() > 0) {
-                    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    if (password_verify($password, $row['password']) || $password === $row['password']) {
-                        session_start();
-                        $_SESSION['user_id'] = $row['user_id'];
-                        $_SESSION['name'] = $row['name'];
-                        $_SESSION['email'] = $row['email'];
-                        $_SESSION['role'] = 'admin';
-                        $_SESSION['image'] = $row['image'] ?? null;
-                        
-                        header('Location: dashboard/');
-                        exit;
-                    } else {
-                        $error_message = 'Invalid admin credentials!';
-                    }
-                } else {
-                    $error_message = 'Invalid admin credentials!';
-                }
-            }
-        } catch (PDOException $e) {
-            $error_message = 'System error. Please try again later.';
+  include '../connectMySql.php';
+
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+
+  if (empty($email) || empty($password)) {
+    $error_message = 'Please enter both email and password.';
+  } else {
+    try {
+      // Build DSN from loaded config to avoid case/port issues
+      $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4', $servername, $port, $db);
+      $pdo = new PDO($dsn, $username_server, $password_server);
+      $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+      // Check admin table (authoritative source for admin accounts)
+      $stmt = $pdo->prepare("SELECT user_id, email, password, name, status FROM admin WHERE email = :email AND status = 'ACTIVE'");
+      $stmt->bindParam(':email', $email);
+      $stmt->execute();
+
+      if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Verify password (support hashed or legacy plain-text)
+        $password_valid = false;
+        if (!empty($row['password']) && password_verify($password, $row['password'])) {
+          $password_valid = true;
+        } elseif ($password === $row['password']) {
+          $password_valid = true;
         }
+
+        if ($password_valid) {
+          // Start session and redirect to admin dashboard
+          session_start();
+          $_SESSION['user_id'] = $row['user_id'];
+          $_SESSION['name'] = $row['name'];
+          $_SESSION['email'] = $row['email'];
+          $_SESSION['role'] = 'admin';
+          $_SESSION['image'] = $row['image'] ?? null;
+
+          header('Location: dashboard/');
+          exit;
+        } else {
+          $error_message = 'Invalid admin credentials!';
+        }
+      } else {
+        $error_message = 'Invalid admin credentials!';
+      }
+    } catch (PDOException $e) {
+      // Hide details from user but log locally if needed
+      $error_message = 'System error. Please try again later.';
     }
+  }
 }
 ?>
 
