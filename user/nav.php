@@ -378,6 +378,40 @@
     })();
     </script>
 
+<!-- Logout link: force modal (fallback to direct route) -->
+<script>
+    (function() {
+        function initLogoutLink() {
+            var link = document.querySelector('.dropdown-menu a.dropdown-item[data-target="#logoutModal"]');
+            if (!link) return;
+            // Remove any previous handler to avoid duplicate bindings
+            var newLink = link.cloneNode(true);
+            link.parentNode.replaceChild(newLink, link);
+
+            newLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                try {
+                    if (window.jQuery && typeof window.jQuery.fn.modal === 'function') {
+                        window.jQuery('#logoutModal').modal('show');
+                    } else {
+                        // If modal API isn't available, navigate directly
+                        window.location.href = '../../logout.php';
+                    }
+                } catch (err) {
+                    window.location.href = '../../logout.php';
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initLogoutLink);
+        } else {
+            initLogoutLink();
+        }
+    })();
+</script>
+
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
