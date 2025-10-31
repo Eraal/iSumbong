@@ -84,8 +84,22 @@ if(isset($_POST['test_email'])) {
                 ]
             ];
         }
-        // Toggle verbose SMTP debug only when requested
-        $mail->SMTPDebug = $debugMode ? 2 : 0;
+        // Toggle verbose SMTP debug
+        // If either URL debug=1 or .env SMTP_DEBUG_LOG=1 is set, enable verbose and write to logs/mail.log
+        $debugToFile = (function_exists('env') ? env('SMTP_DEBUG_LOG', '0') : getenv('SMTP_DEBUG_LOG')) === '1';
+        if ($debugMode || $debugToFile) {
+            $mail->SMTPDebug = 2; // client/server conversation
+            $mail->Debugoutput = function ($str, $level) {
+                $logDir = __DIR__ . DIRECTORY_SEPARATOR . 'logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0775, true);
+                }
+                $file = $logDir . DIRECTORY_SEPARATOR . 'mail.log';
+                @file_put_contents($file, '[' . date('Y-m-d H:i:s') . "] [level=$level] " . $str . "\n", FILE_APPEND);
+            };
+        } else {
+            $mail->SMTPDebug = 0;
+        }
         
         // Recipients
         $mail->setFrom(FROM_EMAIL, FROM_NAME);
