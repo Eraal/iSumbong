@@ -88,33 +88,9 @@ if (logged_in()) {
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
 
-        <!-- Custom styles for this template-->
-        <script src="../../js/html2canvas.min.js"></script>
-        <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
-
-
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-
-        <!-- Bootstrap core JavaScript-->
-        <script src="../../vendor/jquery/jquery.min.js"></script>
-        <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="../../js/sb-admin-2.min.js"></script>
-
-
-        <!-- jQuery -->
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <!-- Popper.js -->
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-        <!-- Bootstrap JS -->
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom styles for this template-->
+    <script src="../../js/html2canvas.min.js"></script>
+    <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
 
 
     </head>
@@ -583,6 +559,13 @@ if (logged_in()) {
 
         <!-- Custom scripts for all pages-->
         <script src="../../js/sb-admin-2.min.js"></script>
+
+        <!-- Ensure Bootstrap 4 dropdowns are initialized -->
+        <script>
+            $(function () {
+                $('.dropdown-toggle').dropdown();
+            });
+        </script>
 
         <script>
             // PDF Download Function
