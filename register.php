@@ -330,6 +330,19 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
         // Tighter timeouts to avoid long hangs on registration
         $mail->Timeout = 15; // seconds (socket timeout)
         $mail->SMTPKeepAlive = false;
+        // Force IPv4 if requested (helps when IPv6 egress/DNS causes hangs)
+        if ((function_exists('env') ? env('SMTP_FORCE_IPV4', '0') : getenv('SMTP_FORCE_IPV4')) === '1') {
+            $resolved = gethostbyname(SMTP_HOST);
+            if (!empty($resolved) && $resolved !== SMTP_HOST) {
+                $mail->Host = $resolved; // use IPv4 address
+            }
+            $mail->SMTPOptions = [
+                'socket' => [
+                    'bindto' => '0.0.0.0:0',
+                    'tcp_nodelay' => true,
+                ]
+            ];
+        }
         // Optional: relax SSL checks only if you have SSL inspection issues (uncomment if needed)
         // $mail->SMTPOptions = [
         //     'ssl' => [
