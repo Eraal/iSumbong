@@ -19,6 +19,8 @@ if(logged_in()){
 
     <!-- Custom fonts for this template-->
     <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     
     <!-- Custom styles for this template-->
@@ -431,7 +433,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Phishing</h4>
                                 <p class="text-muted mb-4">Paglilinlang sa mga users para makuha ang sensitive info sa pamamagitan ng fake messages.</p>
-                                <a href="#" class="btn btn-outline-danger btn-sm view-details-btn" data-threat="phishing">
+                                <a href="detail.php?type=phishing" class="btn btn-outline-danger btn-sm view-details-btn" data-threat="phishing">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -445,7 +447,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Malware</h4>
                                 <p class="text-muted mb-4">Malicious software na nakakasakit o nag-e-exploit sa computer.</p>
-                                <a href="#" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="malware">
+                                <a href="detail.php?type=malware" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="malware">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -459,7 +461,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Unauthorized Access</h4>
                                 <p class="text-muted mb-4">Illegal na pagpasok sa mga accounts o systems.</p>
-                                <a href="#" class="btn btn-outline-primary btn-sm view-details-btn" data-threat="unauthorized">
+                                <a href="detail.php?type=unauthorized" class="btn btn-outline-primary btn-sm view-details-btn" data-threat="unauthorized">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -473,7 +475,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Cyberbullying</h4>
                                 <p class="text-muted mb-4">Pang-aapi o pag-intimidate sa pamamagitan ng digital platforms.</p>
-                                <a href="#" class="btn btn-outline-secondary btn-sm view-details-btn" data-threat="cyberbullying">
+                                <a href="detail.php?type=cyberbullying" class="btn btn-outline-secondary btn-sm view-details-btn" data-threat="cyberbullying">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -487,7 +489,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Identity Theft</h4>
                                 <p class="text-muted mb-4">Pagnanakaw ng personal information para magpanggap.</p>
-                                <a href="#" class="btn btn-outline-success btn-sm view-details-btn" data-threat="identity">
+                                <a href="detail.php?type=identity" class="btn btn-outline-success btn-sm view-details-btn" data-threat="identity">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -501,7 +503,7 @@ if(logged_in()){
                                 </div>
                                 <h4 class="font-weight-bold text-dark mb-3">Online Fraud</h4>
                                 <p class="text-muted mb-4">Mga deceptive schemes para magnakaw ng pera o valuables online.</p>
-                                <a href="#" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="fraud">
+                                <a href="detail.php?type=fraud" class="btn btn-outline-warning btn-sm view-details-btn" data-threat="fraud">
                                     Tingnan ang details <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
@@ -879,17 +881,17 @@ if(logged_in()){
             }
         };
 
-        // Handle threat detail buttons
-        $('.view-details-btn').click(function(e) {
-            e.preventDefault();
+        // Handle threat detail buttons with graceful fallback to detail page
+        $('.view-details-btn').on('click', function(e) {
             const threatType = $(this).data('threat');
             const threat = threatDetails[threatType];
-            
-            if (threat) {
+            const canModal = (typeof $('#threatModal').modal === 'function');
+            if (threat && canModal) {
+                e.preventDefault();
                 $('#threatModalTitle').text(threat.title);
                 $('#threatModalBody').html(threat.content);
                 $('#threatModal').modal('show');
-            }
+            } // else: no preventDefault so it routes to href (detail page)
         });
 
         // Navigation active state
