@@ -1,5 +1,5 @@
 <?php
-include '../../connectMySQL.php';
+include '../../connectMySql.php';
 include '../../loginverification.php';
 include '../../includes/theme_system.php';
 
