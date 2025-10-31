@@ -2,6 +2,8 @@
 session_start();
 include 'connectMySql.php'; 
 require_once('PHPMailer/PHPMailerAutoload.php');
+// Centralized SMTP config (reads from .env)
+require_once(__DIR__ . '/gmail_config.php');
 
 function generateRandomPassword($length = 12) {
     return substr(str_shuffle('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), 0, $length);
@@ -31,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
+            $mail->Host = SMTP_HOST;
+            $mail->Port = SMTP_PORT;
             $mail->SMTPAuth = true;
-            $mail->Username = 'sendernotifalert@gmail.com';
-            $mail->Password = 'asng husd wqqr xuwp'; // Gmail app password
-            $mail->setFrom('sendernotifalert@gmail.com', 'iSumbong');
-            $mail->addReplyTo('sendernotifalert@gmail.com', 'iSumbong');
-            $mail->SMTPSecure = 'tls';
-            $mail->Port = 587;
+            $mail->SMTPSecure = SMTP_ENCRYPTION;
+            $mail->Username = SMTP_USERNAME;
+            $mail->Password = SMTP_PASSWORD; // App password when using Gmail
+            $mail->setFrom(FROM_EMAIL, FROM_NAME);
+            $mail->addReplyTo(REPLY_TO_EMAIL ?: FROM_EMAIL, FROM_NAME);
             $mail->addAddress($email);
 
             $mail->isHTML(true);
@@ -49,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div style='padding:10px;background:#f1f1f1;border-radius:8px;font-size:16px;'>
                     <b>$newPassword</b>
                 </div>
-                <p>You can now log in using your new password. Itâs recommended to change it after logging in.</p>
+                <p>You can now log in using your new password. It's recommended to change it after logging in.</p>
                 <br>
-                <p>ð¡ï¸ iSumbong</p>
+                <p>iSumbong</p>
             ";
 
             if ($mail->send()) {
