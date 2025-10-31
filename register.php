@@ -7,6 +7,17 @@ require_once 'PHPMailer/PHPMailerAutoload.php';
 // Include Gmail SMTP config
 include('gmail_config.php');
 
+// Lightweight perf logger (writes to logs/register.log)
+function reg_log($msg) {
+    $logDir = __DIR__ . DIRECTORY_SEPARATOR . 'logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0775, true);
+    }
+    $file = $logDir . DIRECTORY_SEPARATOR . 'register.log';
+    $prefix = '[' . date('Y-m-d H:i:s') . '] ' . ($_SERVER['REMOTE_ADDR'] ?? 'CLI') . ' - ';
+    @file_put_contents($file, $prefix . $msg . "\n", FILE_APPEND);
+}
+
 // Siniloan, Laguna boundaries (corrected to include actual municipality)
 define('SINILOAN_LAT_MIN', 14.250);
 define('SINILOAN_LAT_MAX', 14.520);
@@ -48,7 +59,10 @@ if (isset($_POST['btn_verify'])) {
     }
 
     $fileName = basename($_FILES["id_image"]["name"]);
-    $targetFile = $uploadDir . $fileName;
+    // Sanitize and uniquify filename to avoid collisions
+    $safeName = preg_replace('/[^A-Za-z0-9._-]/', '_', $fileName);
+    $safeName = time() . '_' . $safeName;
+    $targetFile = $uploadDir . $safeName;
 
     if (move_uploaded_file($_FILES["id_image"]["tmp_name"], $targetFile)) {
         $outputFile = $uploadDir . "output_" . uniqid();
@@ -74,7 +88,12 @@ if (isset($_POST['btn_verify'])) {
             $addressBorder = "border: 2px solid red;";
         } else {
             $cmd = $tesseractPath . " " . escapeshellarg($targetFile) . " " . escapeshellarg($outputFile) . " -l eng";
+            $output = [];
+            $return_var = null;
+            $t0 = microtime(true);
             exec($cmd . " 2>&1", $output, $return_var);
+            $ocrMs = (int) round((microtime(true) - $t0) * 1000);
+            reg_log("OCR exec for $safeName took {$ocrMs}ms (exit=$return_var)");
 
             if ($return_var === 0 && file_exists($outputFile . ".txt")) {
                 $extractedText = file_get_contents($outputFile . ".txt");
@@ -227,11 +246,17 @@ if (isset($_POST['btn_save'])) {
                     '" . $token_expiry . "',
                     '" . $address . "'
                 )";
+            $t0 = microtime(true);
             $result = mysqli_query($conn, $sql);
+            $insertMs = (int) round((microtime(true) - $t0) * 1000);
+            reg_log("DB insert for $email took {$insertMs}ms");
 
             if ($result) {
                 // Send verification email using PHPMailer with Gmail SMTP
+                $t1 = microtime(true);
                 $emailResult = sendVerificationEmailPHPMailer($email, $name, $verification_token);
+                $emailMs = (int) round((microtime(true) - $t1) * 1000);
+                reg_log("Email send to $email took {$emailMs}ms (success=" . ($emailResult['success'] ? '1' : '0') . ")");
 
                 if ($emailResult['success']) {
                     echo "<script src='js/sweetalert2.all.min.js'></script>
@@ -302,6 +327,18 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
         $mail->Password = SMTP_PASSWORD;
         $mail->SMTPSecure = SMTP_ENCRYPTION;
         $mail->Port = SMTP_PORT;
+        // Tighter timeouts to avoid long hangs on registration
+        $mail->Timeout = 15; // seconds (socket timeout)
+        $mail->SMTPKeepAlive = false;
+        // Optional: relax SSL checks only if you have SSL inspection issues (uncomment if needed)
+        // $mail->SMTPOptions = [
+        //     'ssl' => [
+        //         'verify_peer' => false,
+        //         'verify_peer_name' => false,
+        //         'allow_self_signed' => true,
+        //     ]
+        // ];
+        $mail->CharSet = 'UTF-8';
 
         // For debugging (remove in production)
         // $mail->SMTPDebug = 2;
@@ -371,6 +408,7 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
         $mail->send();
         return ['success' => true, 'message' => 'Verification email sent successfully'];
     } catch (Exception $e) {
+        reg_log('PHPMailer error for ' . $to_email . ': ' . $mail->ErrorInfo);
         return ['success' => false, 'error' => 'Email could not be sent. Error: ' . $mail->ErrorInfo];
     }
 }

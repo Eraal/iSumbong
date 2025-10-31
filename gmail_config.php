@@ -20,17 +20,17 @@ if (!file_exists($env_path)) {
 }
 loadEnv($env_path);
 
-// SMTP Settings
-define('SMTP_HOST', 'smtp.gmail.com');
-define('SMTP_PORT', 587);
+// SMTP Settings (allow overrides from .env)
+define('SMTP_HOST', env('SMTP_HOST', 'smtp.gmail.com'));
+define('SMTP_PORT', (int) env('SMTP_PORT', 587));
 define('SMTP_USERNAME', env('SMTP_USERNAME'));
 define('SMTP_PASSWORD', env('SMTP_PASSWORD'));
-define('SMTP_ENCRYPTION', 'tls');
+define('SMTP_ENCRYPTION', env('SMTP_ENCRYPTION', 'tls'));
 
-// Email Settings
-define('FROM_EMAIL', env('SMTP_USERNAME'));
-define('FROM_NAME', 'iSUMBONG System');
-define('REPLY_TO_EMAIL', env('SMTP_USERNAME'));
+// Email Settings (allow overrides; default to SMTP username)
+define('FROM_EMAIL', env('FROM_EMAIL', env('SMTP_USERNAME')));
+define('FROM_NAME', env('FROM_NAME', 'iSUMBONG System'));
+define('REPLY_TO_EMAIL', env('REPLY_TO_EMAIL', env('SMTP_USERNAME')));
 
 // Verification Settings - Uses environment variable for flexibility
 $app_url = env('APP_URL', 'http://localhost/iSUMBONG');
