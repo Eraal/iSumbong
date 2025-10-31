@@ -21,8 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         include 'login.php';
     } else {
         try {
-            $pdo = new PDO('mysql:host=localhost;dbname=iSUMBONG', $username_server, $password_server);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // Build DSN from existing env-aware config in connectMySql.php
+            $host = $servername ?? 'localhost';
+            $database = $db ?? 'isumbong'; // default aligns with SQL dump (lowercase)
+            $portNum = isset($port) ? (int)$port : 3306;
+            $dsn = "mysql:host={$host};port={$portNum};dbname={$database};charset=utf8mb4";
+
+            $pdo = new PDO($dsn, $username_server, $password_server, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            ]);
             
             // Check for regular users only (not admin)
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email AND role != 'admin' AND status = 'ACTIVE'");
