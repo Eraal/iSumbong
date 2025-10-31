@@ -343,6 +343,19 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
                 ]
             ];
         }
+        // Optional debug logging to file controlled via .env (SMTP_DEBUG_LOG=1)
+        $debugEnabled = (function_exists('env') ? env('SMTP_DEBUG_LOG', '0') : getenv('SMTP_DEBUG_LOG')) === '1';
+        if ($debugEnabled) {
+            $mail->SMTPDebug = 2; // verbose server/client dialog
+            $mail->Debugoutput = function ($str, $level) {
+                $logDir = __DIR__ . DIRECTORY_SEPARATOR . 'logs';
+                if (!is_dir($logDir)) {
+                    @mkdir($logDir, 0775, true);
+                }
+                $file = $logDir . DIRECTORY_SEPARATOR . 'mail.log';
+                @file_put_contents($file, '[' . date('Y-m-d H:i:s') . "] [level=$level] " . $str . "\n", FILE_APPEND);
+            };
+        }
         // Optional: relax SSL checks only if you have SSL inspection issues (uncomment if needed)
         // $mail->SMTPOptions = [
         //     'ssl' => [
@@ -358,6 +371,8 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
 
         // Recipients
         $mail->setFrom(FROM_EMAIL, FROM_NAME);
+        // Set envelope sender (Return-Path) for proper bounces and DMARC alignment
+        $mail->Sender = FROM_EMAIL;
         $mail->addAddress($to_email, $name);
         $mail->addReplyTo(REPLY_TO_EMAIL, FROM_NAME);
 

@@ -3,8 +3,11 @@
 require_once 'PHPMailer/PHPMailerAutoload.php';
 include('gmail_config.php');
 
-// Optional query flag to turn on verbose SMTP debug output: ?debug=1
+// Optional query flags:
+//  - ?debug=1   turn on verbose SMTP debug output
+//  - ?check=1   run quick connectivity matrix to common SMTP hosts/ports
 $debugMode = isset($_GET['debug']) && $_GET['debug'] === '1';
+$runConnectivityMatrix = isset($_GET['check']) && $_GET['check'] === '1';
 
 // Connectivity pre-check (fast) to avoid long hangs
 function smtp_preflight($host, $port, $timeout = 5) {
@@ -18,6 +21,29 @@ function smtp_preflight($host, $port, $timeout = 5) {
         return [true, "Connectivity OK ({$host} -> {$ip}:{$port} in {$ms}ms)"];
     }
     return [false, "Connectivity FAILED ({$host}:{$port}) in {$ms}ms | errno={$errno} errstr={$errstr}"];
+}
+
+// Connectivity matrix against common SMTP providers/ports (lightweight TCP check)
+function smtp_connectivity_matrix() {
+    $providers = [
+        SMTP_HOST,
+        'smtp.gmail.com',
+        'smtp.sendgrid.net',
+        'smtp.mailgun.org',
+    ];
+    $ports = [587, 465, 25, 2525];
+    $rows = [];
+    foreach ($providers as $host) {
+        $host = trim($host);
+        if ($host === '') continue;
+        $row = ['host' => $host, 'results' => []];
+        foreach ($ports as $p) {
+            list($ok, $msg) = smtp_preflight($host, $p, 3);
+            $row['results'][$p] = $ok ? 'OK' : 'BLOCKED';
+        }
+        $rows[] = $row;
+    }
+    return $rows;
 }
 
 if(isset($_POST['test_email'])) {
@@ -99,6 +125,38 @@ if(isset($_POST['test_email'])) {
 </head>
 <body>
     <h2>🛡️ iSUMBONG - Gmail SMTP Test</h2>
+    <?php if ($runConnectivityMatrix): ?>
+        <div class="warning">
+            <strong>Connectivity Matrix (TCP connect, 3s timeout):</strong>
+            <div style="overflow:auto">
+                <table style="border-collapse:collapse; width:100%">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #ddd; padding:6px; text-align:left">Host</th>
+                            <?php foreach ([587,465,25,2525] as $p): ?>
+                                <th style="border:1px solid #ddd; padding:6px; text-align:center">Port <?php echo $p; ?></th>
+                            <?php endforeach; ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach (smtp_connectivity_matrix() as $row): ?>
+                            <tr>
+                                <td style="border:1px solid #ddd; padding:6px;"><code><?php echo htmlspecialchars($row['host']); ?></code></td>
+                                <?php foreach ([587,465,25,2525] as $p): $val = $row['results'][$p]; ?>
+                                    <td style="border:1px solid #ddd; padding:6px; text-align:center; color: <?php echo $val==='OK'?'#155724':'#721c24'; ?>; background: <?php echo $val==='OK'?'#d4edda':'#f8d7da'; ?>;">
+                                        <?php echo $val; ?>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:8px; font-size: 0.9em; color:#6c757d;">
+                Tip: Many providers block 25/465/587 by default. Port 2525 is often open for services like SendGrid/Mailgun.
+            </div>
+        </div>
+    <?php endif; ?>
     
     <div class="warning">
         <strong>⚠️ Before testing:</strong><br>
@@ -111,7 +169,7 @@ if(isset($_POST['test_email'])) {
         SMTP Username: <?php echo SMTP_USERNAME; ?><br>
         From Email: <?php echo FROM_EMAIL; ?>
         <br><br>
-        Tip: Append <code>?debug=1</code> to this URL for verbose SMTP debug.
+        Tips: Append <code>?debug=1</code> for verbose SMTP debug, or <code>?check=1</code> to run a quick connectivity matrix.
     </div>
     
     <form method="POST">
