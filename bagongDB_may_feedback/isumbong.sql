@@ -315,7 +315,7 @@ INSERT INTO `users` (`user_id`, `email`, `password`, `name`, `barangay`, `latitu
 (37, 'ireport211@gmail.com', '$2y$10$uEjsE.FEMjmfhMv9rP.3Fe8gb7ZezWwypRZoIDGamcxH4LfnzBYJ.', 'admin', NULL, NULL, NULL, 'ACTIVE', 'admin', 1, NULL, NULL, '2025-09-03 16:57:28', '2025-09-03 19:38:24', NULL),
 (41, 'testUser1@gmail.com', '$2y$10$zdKgzObFuiuD7YNwobD.Su/aCDRiBUz7N.KiF9bUe4Hj9Asy7mjGy', 'testUser1', 'Pandenio', NULL, NULL, 'ACTIVE', 'user', 0, '0b83f146fb1f450a7e4779d2a54d0be9e9a0d83d8a808c0be6b054b9e3ff0ddf', '2025-09-21 01:47:09', '2025-09-19 23:47:09', '2025-09-19 23:47:09', NULL),
 (42, 'kenneth@gmail.com', '$2y$10$IYcX0MdeNTKELGhLPMkNB.Z5gQRtGfo6ShJc3qaZU7LeeJx6vmGoa', 'Kenny', 'Mendiola', NULL, NULL, 'ACTIVE', 'user', 1, '1ed5ca7164b7b90b044ef7b52b921a9d49f133991902adc905e5fe9cd96e1877', '2025-09-21 07:16:47', '2025-09-20 05:16:47', '2025-09-20 05:18:04', 'Siniloan, Laguna'),
-(52, 'makmak032900@gmail.com', '$2y$10$nsykFTIsAMTRwMz2N6JhsuANUoy2J/7iin877U9E1stDVehtD9E9O', 'Danna Rosales', 'Buhay', NULL, NULL, 'ACTIVE', 'user', 1, NULL, NULL, '2025-10-27 23:04:50', '2025-10-27 23:05:08', 'Siniloan, Laguna'),
+(52, '032900@gmail.com', '$2y$10$nsykFTIsAMTRwMz2N6JhsuANUoy2J/7iin877U9E1stDVehtD9E9O', 'Danna Rosales', 'Buhay', NULL, NULL, 'ACTIVE', 'user', 1, NULL, NULL, '2025-10-27 23:04:50', '2025-10-27 23:05:08', 'Siniloan, Laguna'),
 (54, 'markojoruiz2022@gmail.com', '$2y$10$5OgvWq7lxcevaBuHPnO4oOs3AnLleFl5y9i.U4QcKGGm6EoJHkXZC', 'Mark Ruiz', 'Buhay', NULL, NULL, 'ACTIVE', 'user', 1, NULL, NULL, '2025-10-27 23:27:38', '2025-10-27 23:28:13', 'Siniloan, Laguna');
 
 --

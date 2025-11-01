@@ -28,83 +28,79 @@ if (logged_in()) {
         $suggestion = "";
         $table = "incident";
 
-        // Get API key from environment variables
+        // Get API key from environment variables (fail-fast: if missing, skip AI and use defaults)
         $apiKey = env('OPENAI_API_KEY');
-        if (!$apiKey) {
-            echo "❌ OpenAI API key not found in environment variables.";
-            exit;
-        }
+        $hasOpenAI = !empty($apiKey);
         
-        $url = "https://api.openai.com/v1/chat/completions";
-        if (!isset($_FILES['attachment']) || !isset($_POST['description'])) {
-            echo "❌ Please upload an image and enter a description.";
-            exit;
-        }
-        $description = $_POST['description'];
-        $imageTmpName = $_FILES['attachment']['tmp_name'][0] ?? null;
-        $imageType = $_FILES['attachment']['type'][0] ?? '';
-        if (!$imageTmpName || !file_exists($imageTmpName)) {
-            echo "❌ Please upload at least one valid image file.";
-            exit;
-        }
-        $imageData = base64_encode(file_get_contents($imageTmpName));
-        $payload = [
-            "model" => "gpt-4o-mini",
-            "messages" => [[
-                "role" => "user",
-                "content" => [
-                    [
-                        "type" => "text",
-                        "text" => "Suriin mo kung tugma ang larawan sa description na ito: '$description'. Sagutin lang ng 'Tugma' o 'Hindi tugma'."
-                    ],
-                    [
-                        "type" => "image_url",
-                        "image_url" => [
-                            "url" => "data:$imageType;base64,$imageData"
-                        ]
-                    ]
-                ]
-            ]],
-            "max_tokens" => 50
-        ];
+        // Optional: Quick image-text consistency check via OpenAI (fail-fast and non-fatal)
+        if ($hasOpenAI) {
+            $url = "https://api.openai.com/v1/chat/completions";
+            if (isset($_FILES['attachment']) && isset($_POST['description'])) {
+                $description = $_POST['description'];
+                $imageTmpName = $_FILES['attachment']['tmp_name'][0] ?? null;
+                $imageType = $_FILES['attachment']['type'][0] ?? '';
+                if ($imageTmpName && file_exists($imageTmpName)) {
+                    $imageData = base64_encode(file_get_contents($imageTmpName));
+                    $payload = [
+                        "model" => "gpt-4o-mini",
+                        "messages" => [[
+                            "role" => "user",
+                            "content" => [
+                                [
+                                    "type" => "text",
+                                    "text" => "Suriin mo kung tugma ang larawan sa description na ito: '$description'. Sagutin lang ng 'Tugma' o 'Hindi tugma'."
+                                ],
+                                [
+                                    "type" => "image_url",
+                                    "image_url" => [
+                                        "url" => "data:$imageType;base64,$imageData"
+                                    ]
+                                ]
+                            ]
+                        ]],
+                        "max_tokens" => 50
+                    ];
 
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json",
-                "Authorization: Bearer $apiKey"
-            ],
-            CURLOPT_POSTFIELDS => json_encode($payload)
-        ]);
+                    $ch = curl_init($url);
+                    curl_setopt_array($ch, [
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_POST => true,
+                        CURLOPT_HTTPHEADER => [
+                            "Content-Type: application/json",
+                            "Authorization: Bearer $apiKey"
+                        ],
+                        CURLOPT_POSTFIELDS => json_encode($payload),
+                        // Fail fast to avoid 504s
+                        CURLOPT_CONNECTTIMEOUT => 2,
+                        CURLOPT_TIMEOUT => 6,
+                        CURLOPT_IPRESOLVE => CURL_IPRESOLVE_V4,
+                    ]);
 
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        if (!$response) {
-            echo "❌ No response from API.";
-            exit;
-        }
-
-        $result = json_decode($response, true);
-        if (isset($result['choices'][0]['message']['content'])) {
-            if($result['choices'][0]['message']['content'] != 'Tugma'){
-                $table = "spam";
+                    $response = curl_exec($ch);
+                    if ($response === false) {
+                        error_log('OpenAI image-text check error: ' . curl_error($ch));
+                    } else {
+                        $result = json_decode($response, true);
+                        $answer = $result['choices'][0]['message']['content'] ?? '';
+                        if ($answer && stripos($answer, 'tugma') === false) {
+                            $table = "spam"; // mark as spam if AI says not matching
+                        }
+                    }
+                    curl_close($ch);
+                }
             }
-        } 
-
-
-
-
-
-
-        // Get API key from environment variables for second API call
-        $apiKey = env('OPENAI_API_KEY');
-        if (!$apiKey) {
-            echo "❌ OpenAI API key not found in environment variables.";
-            exit;
         }
+
+
+
+
+
+
+        // Second AI call (classification + suggestion) - optional, fail-fast, with safe defaults
+        $apiKey = env('OPENAI_API_KEY');
+        $category = $category ?: "General Security";
+        $severity_level = $severity_level ?: "Medium";
+        $suggestion = $suggestion ?: "Please review this incident and take appropriate security measures.";
 
         $prompt = "
         Base sa title at description, classify mo ito:
@@ -129,7 +125,8 @@ if (logged_in()) {
         ";
 
 
-        $ch = curl_init("https://api.openai.com/v1/chat/completions");
+    if ($hasOpenAI) {
+    $ch = curl_init("https://api.openai.com/v1/chat/completions");
 
         $data = [
             "model" => "gpt-4o-mini",
@@ -146,66 +143,40 @@ if (logged_in()) {
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
+        // Fail fast to avoid blocking request
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 6);
+        curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         $response = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            echo "cURL Error: " . curl_error($ch);
+        if ($response === false) {
+            error_log('OpenAI classify error: ' . curl_error($ch));
         } else {
             $result = json_decode($response, true);
-
-            if (isset($result['error'])) {
-                echo "API Error: " . $result['error']['message'];
-            } elseif (isset($result['choices'][0]['message']['content'])) {
+            if (!isset($result['error']) && isset($result['choices'][0]['message']['content'])) {
                 $content = trim($result['choices'][0]['message']['content']);
-
                 $jsonData = json_decode($content, true);
-
                 if (!$jsonData) {
                     $clean = preg_replace('/```(json)?/i', '', $content);
                     $clean = trim($clean);
                     $jsonData = json_decode($clean, true);
                 }
-
                 if ($jsonData && isset($jsonData['category'], $jsonData['severity_level'], $jsonData['suggestion'])) {
-                    $category = $jsonData['category'];
-                    $severity_level = $jsonData['severity_level'];
-                    $suggestion = $jsonData['suggestion'];
-
+                    $category = $jsonData['category'] ?: $category;
+                    $severity_level = $jsonData['severity_level'] ?: $severity_level;
+                    $suggestion = $jsonData['suggestion'] ?: $suggestion;
                     if (is_array($suggestion)) {
                         $suggestion = implode("\n", $suggestion);
                     }
-
-                    $suggestion = str_replace(
-                        ["<br>", "<br/>", "<br />"], 
-                        "\n", 
-                        $suggestion
-                    );
-
-                    // Remove the htmlspecialchars that was causing HTML encoding issues
-                    // $suggestion = htmlspecialchars($suggestion, ENT_QUOTES, 'UTF-8');
-                } else {
-                    // If JSON parsing fails, set default values instead of showing error
-                    $category = "General Security";
-                    $severity_level = "Medium";
-                    $suggestion = "Please review this incident and take appropriate security measures.";
-                    
-                    // Optionally log the parsing issue for debugging (comment out in production)
-                    // echo "JSON parsing failed. Using default values.<br>";
-                    // echo "<pre>" . htmlspecialchars($content) . "</pre>";
+                    $suggestion = str_replace(["<br>", "<br/>", "<br />"], "\n", $suggestion);
                 }
             } else {
-                // If no content in API response, use default values
-                $category = "General Security";
-                $severity_level = "Medium";
-                $suggestion = "Please review this incident and take appropriate security measures.";
-                
-                // Optionally log the API issue for debugging (comment out in production)
-                // echo "No content in API response. Using default values.<br>";
-                // echo "<pre>" . print_r($result, true) . "</pre>";
+                if (isset($result['error']['message'])) {
+                    error_log('OpenAI classify API error: ' . $result['error']['message']);
+                }
             }
         }
-
         curl_close($ch);
+        } // end if($hasOpenAI)
 
 
         // Use prepared statement to prevent SQL injection
@@ -271,107 +242,10 @@ if (logged_in()) {
                 error_log("Total files uploaded: " . count($uploaded_files) . " - Files: " . implode(", ", $uploaded_files));
             }
 
-            $query = "SELECT * FROM admin limit 1";
-            $result = $conn->query($query);
-            while ($row = $result->fetch_assoc()) {
-                require_once('../../PHPMailer/PHPMailerAutoload.php');
-                require_once('../../gmail_config.php'); // Load email configuration
-                
-                $mail = new PHPMailer;
-                $mail->isSMTP();
-                $mail->Host = SMTP_HOST;
-                $mail->Port = SMTP_PORT;
-                $mail->SMTPAuth = true;
-                $mail->Username = SMTP_USERNAME;
-                $mail->Password = SMTP_PASSWORD;
-                $mail->SMTPSecure = SMTP_ENCRYPTION;
-                $mail->setFrom(FROM_EMAIL, FROM_NAME);
-                $mail->addReplyTo(REPLY_TO_EMAIL, FROM_NAME);
-                $mail->addAddress($row['email'], 'Receiver Name');
-                $mail->Subject = 'New Incident Report';
-                $mail->isHTML(true);
-
-                $mail->Body = '
-                <!DOCTYPE html>
-                <html>
-                <head>
-                <style>
-                    body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f6f8;
-                    margin: 0;
-                    padding: 0;
-                    }
-                    .container {
-                    background-color: #ffffff;
-                    max-width: 600px;
-                    margin: 30px auto;
-                    padding: 20px 30px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-                    color: #333;
-                    }
-                    .header {
-                    text-align: center;
-                    padding-bottom: 20px;
-                    }
-                    .header h2 {
-                    margin: 0;
-                    color: #1a73e8;
-                    }
-                    .content p {
-                    margin: 12px 0;
-                    font-size: 15px;
-                    }
-                    .label {
-                    font-weight: bold;
-                    color: #555;
-                    }
-                    .footer {
-                    margin-top: 30px;
-                    font-size: 13px;
-                    text-align: center;
-                    color: #888;
-                    }
-                </style>
-                </head>
-                <body>
-                <div class="container">
-                    <div class="header">
-                    <h2>🚨 New Incident Report</h2>
-                    </div>
-                    <div class="content">
-                    <p><span class="label">Title:</span> '.$title.'</p>
-                    <p><span class="label">Category:</span> '.$category.'</p>
-                    <p><span class="label">Date:</span> '.$date.'</p>
-                    <p><span class="label">Description:</span><br>'.$description.'</p>
-                    <p><span class="label">Reported By:</span> '.$_SESSION['name'].'</p>
-                    </div>
-                    <div class="footer">
-                    This is an automated message. Please do not reply.
-                    </div>
-                </div>
-                </body>
-                </html>';
-
-                if (!$mail->send()) {
-                    echo 'Email not sent: ' . $mail->ErrorInfo;
-                } else {
-                    echo "<script src='../../js/sweetalert2.all.min.js'></script>
-                    <body onload='success()'></body>
-                    <script> 
-                    function success(){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Email Sent'
-                    })
-                    }</script>";
-                }
-            }
-
+            // Send immediate success response to the user (avoid waiting for email)
             echo "<script src='../../js/sweetalert2.all.min.js'></script>
             <body onload='save()'></body>
-            <script> 
+            <script>
             function save(){
                 Swal.fire({
                     title: 'Incident Reported Successfully!',
@@ -385,6 +259,81 @@ if (logged_in()) {
                 });
             }
             </script>";
+
+            // Flush response to client now
+            if (function_exists('fastcgi_finish_request')) {
+                fastcgi_finish_request();
+            } else {
+                @ob_flush(); @flush();
+            }
+
+            // Continue: send email notification in the background (non-blocking for user)
+            $query = "SELECT * FROM admin limit 1";
+            $result = $conn->query($query);
+            while ($row = $result->fetch_assoc()) {
+                require_once('../../PHPMailer/PHPMailerAutoload.php');
+                require_once('../../gmail_config.php'); // Load email configuration
+
+                $mail = new PHPMailer;
+                $mail->isSMTP();
+                $mail->SMTPAuth = true;
+                $mail->Host = SMTP_HOST;
+                $mail->Port = SMTP_PORT;
+                $mail->Username = SMTP_USERNAME;
+                $mail->Password = SMTP_PASSWORD;
+                $mail->SMTPSecure = SMTP_ENCRYPTION;
+                $mail->CharSet = 'UTF-8';
+                $mail->SMTPKeepAlive = false;
+                $mail->Timeout = 10; // seconds
+                // Force IPv4 if configured (helps on hosts with broken IPv6)
+                if ((function_exists('env') ? env('SMTP_FORCE_IPV4', '0') : getenv('SMTP_FORCE_IPV4')) === '1') {
+                    $resolved = gethostbyname(SMTP_HOST);
+                    if (!empty($resolved) && $resolved !== SMTP_HOST) {
+                        $mail->Host = $resolved;
+                    }
+                }
+
+                $mail->setFrom(FROM_EMAIL, FROM_NAME);
+                $mail->addReplyTo(defined('REPLY_TO_EMAIL') ? REPLY_TO_EMAIL : FROM_EMAIL, FROM_NAME);
+                $mail->addAddress($row['email'], 'Receiver Name');
+                $mail->Subject = 'New Incident Report';
+                $mail->isHTML(true);
+
+                $mail->Body = '
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <style>
+                    body {font-family: Arial, sans-serif;background-color: #f4f6f8;margin: 0;padding: 0;}
+                    .container {background-color: #ffffff;max-width: 600px;margin: 30px auto;padding: 20px 30px;border-radius: 8px;box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);color: #333;}
+                    .header {text-align: center;padding-bottom: 20px;}
+                    .header h2 {margin: 0;color: #1a73e8;}
+                    .content p {margin: 12px 0;font-size: 15px;}
+                    .label {font-weight: bold;color: #555;}
+                    .footer {margin-top: 30px;font-size: 13px;text-align: center;color: #888;}
+                </style>
+                </head>
+                <body>
+                <div class="container">
+                    <div class="header"><h2>🚨 New Incident Report</h2></div>
+                    <div class="content">
+                    <p><span class="label">Title:</span> '.addslashes($title).'</p>
+                    <p><span class="label">Category:</span> '.addslashes($category).'</p>
+                    <p><span class="label">Date:</span> '.addslashes($date).'</p>
+                    <p><span class="label">Description:</span><br>'.nl2br(htmlspecialchars($description)).'</p>
+                    <p><span class="label">Reported By:</span> '.addslashes($_SESSION['name']).'</p>
+                    </div>
+                    <div class="footer">This is an automated message. Please do not reply.</div>
+                </div>
+                </body>
+                </html>';
+
+                if (!$mail->send()) {
+                    error_log('Email not sent: ' . $mail->ErrorInfo);
+                }
+            }
+
+            exit; // stop rendering the rest of the page in this POST
         } else 
         {
             echo "Error saving incident: " . $stmt->error;
