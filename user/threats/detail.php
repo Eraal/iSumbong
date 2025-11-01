@@ -153,7 +153,7 @@ if (logged_in()) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Threat Details - iReport</title>
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <!-- Use CDN for Font Awesome to avoid blocked /vendor path in production -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
     <?php echo getThemeMeta(); ?>
@@ -188,8 +188,10 @@ if (logged_in()) {
     </div>
     <?php include '../footer.php'; ?>
 </div>
-<script src="../../vendor/jquery/jquery.min.js"></script>
-<script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Core JavaScript via CDN to avoid blocked /vendor assets -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 <script src="../../js/sb-admin-2.min.js"></script>
 </body>
 </html>
