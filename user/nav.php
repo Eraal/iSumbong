@@ -37,13 +37,22 @@
         box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
     }
 
+    /* Robust dropdown visibility even without Bootstrap JS */
+    .nav-item.dropdown .dropdown-menu {
+        pointer-events: auto;
+    }
+    .nav-item.dropdown.show > .dropdown-menu {
+        display: block;
+    }
+
     /* Fixed navbar positioning */
     .navbar-fixed {
         position: fixed;
         top: 0;
         left: 0;
         right: 0;
-        z-index: 1030;
+        /* Ensure navbar is above any page overlays */
+        z-index: 2000;
         margin-bottom: 0;
     }
 
@@ -253,6 +262,13 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../news/">
+        /* Robust dropdown visibility even without Bootstrap JS */
+        .nav-item.dropdown .dropdown-menu {
+            pointer-events: auto;
+        }
+        .nav-item.dropdown.show > .dropdown-menu {
+            display: block;
+        }
                         <i class="fas fa-newspaper"></i>
                         <span>News</span>
                     </a>
@@ -269,7 +285,7 @@
                     <button class="theme-toggle" onclick="handleThemeToggle(event)" title="Toggle Theme">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
-                </li>
+                    toggle.addEventListener('click', function(e) {
 
                 <!-- User dropdown -->
                 <li class="nav-item dropdown">
@@ -281,8 +297,14 @@
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="../incident/">
                             <i class="fas fa-edit text-gray-400 me-2"></i>My Incidents
-                        </a>
-                        <a class="dropdown-item" href="../profile/">
+                            var willShow = true;
+                            if (parent) {
+                                willShow = !parent.classList.contains('show');
+                                parent.classList.toggle('show');
+                            }
+                            if (menu && menu.classList) menu.classList.toggle('show');
+                            // Maintain ARIA state for accessibility
+                            this.setAttribute('aria-expanded', willShow ? 'true' : 'false');
                             <i class="fas fa-user text-gray-400 me-2"></i>Profile
                         </a>
                         <a class="dropdown-item" href="../settings/">
