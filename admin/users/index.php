@@ -116,14 +116,14 @@ if(logged_in()){
                                             : "<span class='badge badge-danger badge-pill px-3 py-2'>Inactive</span>";
 
                                         echo "<tr>";
-                                        echo "<td class='text-center'>
-                                                <a href='view.php?id=".$row['user_id']."' class='btn btn-sm btn-outline-primary rounded-pill shadow-sm mr-1'>
-                                                    <i class='fas fa-eye'></i> View
-                                                </a>
-                                                <a data-id='".$row['user_id']."' class='btn btn-sm btn-outline-danger rounded-pill shadow-sm delete_user'>
-                                                    <i class='fas fa-trash'></i>
-                                                </a>
-                                                </td>";
+                                        echo "<td class='text-center'>".
+                                             "<a href='view.php?id=".$row['user_id']."' class='btn btn-sm btn-outline-primary rounded-pill shadow-sm mr-1'>".
+                                                 "<i class='fas fa-eye'></i> View".
+                                             "</a>".
+                                             "<a href='javascript:void(0)' data-id='".$row['user_id']."' class='btn btn-sm btn-outline-danger rounded-pill shadow-sm delete_user'>".
+                                                 "<i class='fas fa-trash'></i>".
+                                             "</a>".
+                                         "</td>";
                                         echo "<td class='text-dark font-weight-bold'>" . htmlspecialchars($row['name']) . "</td>";
                                         echo "<td class='text-dark'>" . htmlspecialchars($row['email']) . "</td>";
                                         echo "<td>$status</td>";
@@ -198,6 +198,26 @@ if(logged_in()){
                 return;
             }
 
+            // If SweetAlert is unavailable in production, fallback to native confirm
+            if (typeof Swal === 'undefined') {
+                if (confirm('Are you sure you want to delete this account?')) {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'delete.php',
+                        data: { id: dataId },
+                        success: function () {
+                            alert('Deleted Successfully');
+                            window.location.href = 'index.php';
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error deleting user:', error);
+                            alert('Delete failed. Please try again.');
+                        }
+                    });
+                }
+                return;
+            }
+
             Swal.fire({
                 title: 'Are you sure you want to delete this account?',
                 showDenyButton: true,
@@ -209,7 +229,7 @@ if(logged_in()){
                         type: 'GET',
                         url: 'delete.php',
                         data: { id: dataId },
-                        success: function (response) {
+                        success: function () {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Deleted Successfully',
