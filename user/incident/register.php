@@ -36,7 +36,8 @@ if (logged_in()) {
         if ($hasOpenAI) {
             $url = "https://api.openai.com/v1/chat/completions";
             if (isset($_FILES['attachment']) && isset($_POST['description'])) {
-                $description = $_POST['description'];
+                // Use local variable for the check to avoid clobbering the augmented $description
+                $descForCheck = $_POST['description'];
                 $imageTmpName = $_FILES['attachment']['tmp_name'][0] ?? null;
                 $imageType = $_FILES['attachment']['type'][0] ?? '';
                 if ($imageTmpName && file_exists($imageTmpName)) {
@@ -48,7 +49,7 @@ if (logged_in()) {
                             "content" => [
                                 [
                                     "type" => "text",
-                                    "text" => "Suriin mo kung tugma ang larawan sa description na ito: '$description'. Sagutin lang ng 'Tugma' o 'Hindi tugma'."
+                                    "text" => "Base sa description sa ibaba at larawan, ibalik ang eksaktong JSON lang (walang paliwanag): {\"match\": true|false, \"reason\": \"maikling paliwanag\"}. Kung hindi sapat ang ebidensya, ilagay \"match\": false.\n\nDescription: '" . str_replace(["\r","\n"], [' ', ' '], $descForCheck) . "'"
                                 ],
                                 [
                                     "type" => "image_url",
@@ -58,7 +59,8 @@ if (logged_in()) {
                                 ]
                             ]
                         ]],
-                        "max_tokens" => 50
+                        "max_tokens" => 60,
+                        "temperature" => 0
                     ];
 
                     $ch = curl_init($url);
@@ -82,9 +84,46 @@ if (logged_in()) {
                     } else {
                         $result = json_decode($response, true);
                         $answer = $result['choices'][0]['message']['content'] ?? '';
-                        if ($answer && stripos($answer, 'tugma') === false) {
-                            $table = "spam"; // mark as spam if AI says not matching
+
+                        // Try JSON parse first
+                        $matchDecision = null; // true/false/null(unknown)
+                        if ($answer) {
+                            $json = json_decode($answer, true);
+                            if (!$json) {
+                                // clean potential code fences
+                                $clean = preg_replace('/```(json)?/i', '', $answer);
+                                $clean = trim($clean, "` \t\n\r");
+                                $json = json_decode($clean, true);
+                            }
+                            if (is_array($json) && array_key_exists('match', $json)) {
+                                // normalize to boolean if string "true"/"false"
+                                $val = $json['match'];
+                                if (is_bool($val)) {
+                                    $matchDecision = $val;
+                                } elseif (is_string($val)) {
+                                    $valLower = strtolower($val);
+                                    if ($valLower === 'true' || $valLower === 'yes') $matchDecision = true;
+                                    elseif ($valLower === 'false' || $valLower === 'no') $matchDecision = false;
+                                } elseif (is_numeric($val)) {
+                                    $matchDecision = ((int)$val) === 1;
+                                }
+                            }
                         }
+
+                        if ($matchDecision === false) {
+                            $table = "spam"; // explicit non-match
+                        } elseif ($matchDecision === null) {
+                            // Fallback: heuristic keyword check (handles "Hindi tugma")
+                            $lower = function_exists('mb_strtolower') ? mb_strtolower($answer, 'UTF-8') : strtolower($answer);
+                            $negative = preg_match("/\\b(hindi\\s*tugma|hindi\\s*akma|hindi\\s*naangkop|does\\s*not\\s*match|not\\s*match|mismatch|no\\s*match)\\b/u", $lower);
+                            $positive = preg_match("/^\\s*(tugma|akma|match(?:ed)?)\\b/u", $lower);
+                            if ($negative && !$positive) {
+                                $table = "spam";
+                            }
+                        }
+
+                        // Minimal debug log (no PII)
+                        error_log('[AI image-check] decision=' . ($matchDecision === null ? 'unknown' : ($matchDecision ? 'match' : 'no_match')) . ' table=' . $table);
                     }
                     curl_close($ch);
                 }
