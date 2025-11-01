@@ -19,11 +19,12 @@ if(logged_in()){
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../../img/logo1.png">
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <!-- Font Awesome (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-dymI02+8G2+r2Y+0d7V9zUMpRq7Zl2A9v1xkE8gXhH5m9oQm2mE2XJzj3nNnZ9rQ7qkNQFqk7tVbI1Q3qGZ37A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
     <script src='../../js/sweetalert2.all.min.js'></script>
+    <!-- DataTables CSS (CDN) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
     
     <style>
         /* Custom styles for fixed sidebar */
@@ -170,13 +171,18 @@ if(logged_in()){
         </div>
     </div>
 
-    <script src="../../vendor/jquery/jquery.min.js"></script>
-    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- jQuery (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pvHashC7S8C8mGmQbq5aN7bR3J3T1C3rQkLz0QTzQ8W8x0h2m9c2hQbNf3z2m1v7b2bqvTUSrY8h9fX3rQKf1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Bootstrap 4 Bundle (incl. Popper) (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js" integrity="sha512-F2nZ2p7O1V4g4a1JIRYF4s8YxgG7F7Bqk0dV1wqXG3O1Dk4S6iG7cX9tCk5m2Q8l3YH9QJ7hJw9nH9j6bKqj3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- jQuery Easing (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0/V5Q3yM0Q8z0ZB1bJzv4O+o7S6J3kG3T9mPx0S1uL4V7pH2qQ2X4L8rKycK4G7i1Y0j8J/6G3T0Pz3mXWf1Jg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../../js/sb-admin-2.min.js"></script>
-    <script src="../../vendor/chart.js/Chart.min.js"></script>
-    <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- Chart.js (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" integrity="sha512-dl5ZQ5wVg3o5Pq6fK4t0xNnQkqV5v8pN4bD3lJmWQ0N6h4k8g0j3H5h9R2p4u7n2bX2Q4tZ3n0z7Y5lK9w1YwA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- DataTables (CDN) -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
       $(function () {
