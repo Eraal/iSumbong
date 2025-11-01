@@ -1090,57 +1090,9 @@ include '../../includes/theme_system.php';
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
-<!-- Custom JavaScript for navbar functionality -->
+<!-- Custom JavaScript: active page highlight only (use Bootstrap for nav behaviors) -->
 <script>
-    $(document).ready(function() {
-        // Enhanced navbar toggle functionality
-        $('.navbar-toggler').click(function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            var target = $(this).attr('data-target');
-            var navbar = $(target);
-            
-            // Toggle the collapse
-            navbar.toggleClass('show');
-            
-            // Update aria-expanded
-            var isExpanded = navbar.hasClass('show');
-            $(this).attr('aria-expanded', isExpanded);
-            
-            // Add animation class
-            if (isExpanded) {
-                navbar.addClass('collapsing').removeClass('collapse');
-                setTimeout(function() {
-                    navbar.removeClass('collapsing').addClass('collapse show');
-                }, 350);
-            } else {
-                navbar.addClass('collapsing').removeClass('show');
-                setTimeout(function() {
-                    navbar.removeClass('collapsing').addClass('collapse');
-                }, 350);
-            }
-        });
-        
-        // Close navbar when clicking outside
-        $(document).click(function(event) {
-            if (!$(event.target).closest('.navbar').length) {
-                $('.navbar-collapse').removeClass('show');
-                $('.navbar-toggler').attr('aria-expanded', 'false');
-            }
-        });
-        
-        // Handle dropdown with proper Bootstrap 4 methods
-        $('.dropdown-toggle').dropdown();
-        
-        // Close dropdown when clicking outside
-        $(document).click(function(event) {
-            if (!$(event.target).closest('.dropdown').length) {
-                $('.dropdown-menu').removeClass('show');
-            }
-        });
-        
-        // Active page highlighting
+    $(function() {
         var currentPath = window.location.pathname;
         $('.navbar-nav .nav-link').each(function() {
             var href = $(this).attr('href');
