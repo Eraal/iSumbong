@@ -22,9 +22,7 @@ if (logged_in()) {
         <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
         <link rel="apple-touch-icon" sizes="180x180" href="../../img/logo1.png">
 
-    <!-- Custom fonts for this template-->
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <!-- Custom fonts for this template (CDN to avoid /vendor 403) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
         <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -33,6 +31,8 @@ if (logged_in()) {
         <!-- Custom styles for this template-->
         <script src="../../js/html2canvas.min.js"></script>
         <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
+    <!-- DataTables CSS (CDN) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
 
         <style>
             /* Custom styles for fixed sidebar */
@@ -236,24 +236,24 @@ if (logged_in()) {
                 </div>
             </div>
 
-            <!-- Bootstrap core JavaScript-->
-            <script src="../../vendor/jquery/jquery.min.js"></script>
-            <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- Bootstrap core JavaScript (CDN) -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
 
-            <!-- Core plugin JavaScript-->
-            <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+            <!-- Core plugin JavaScript (CDN) -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
             <!-- Custom scripts for all pages-->
             <script src="../../js/sb-admin-2.min.js"></script>
 
             <!-- Page level plugins -->
-            <script src="../../vendor/chart.js/Chart.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 
             <!-- Page level custom scripts -->
             <script src="../../js/demo/chart-area-demo.js"></script>
             <script src="../../js/demo/chart-pie-demo.js"></script>
-            <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-            <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 
             <script>
                 $(function() {
