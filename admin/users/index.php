@@ -188,35 +188,46 @@ if(logged_in()){
         });
 
 
-        $(document).ready(function() {
-            $(".delete_user").on("click", function() {
-                  var dataId = $(this).data("id");
-                  Swal.fire({
-                      title: "Are you sure you want to delete this account?",
-                      showDenyButton: true,
-                      confirmButtonText: "Proceed",
-                      denyButtonText: `Cancel`
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                       $.ajax({
-                            type: 'GET',
-                            url: 'delete.php',
-                            data: { id: dataId }, 
-                            success: function(response) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Deleted Successfully',
-                                    confirmButtonText: 'OK'
-                                }).then(() => {
-                                    window.location.href = "index.php";
-                                });
-                            },
-                            error: function (xhr, status, error) {
-                                  console.error('Error fetching user data:', error);
-                                }
-                        });
-                      } 
+        // Use delegated event binding so clicks work even after DataTables redraws
+        $(document).on('click', '.delete_user', function (e) {
+            e.preventDefault();
+            var dataId = $(this).data('id');
+
+            if (!dataId) {
+                console.warn('Delete action missing data-id');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure you want to delete this account?',
+                showDenyButton: true,
+                confirmButtonText: 'Proceed',
+                denyButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'delete.php',
+                        data: { id: dataId },
+                        success: function (response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Deleted Successfully',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = 'index.php';
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error deleting user:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Delete failed',
+                                text: 'There was a problem deleting the account. Please try again.'
+                            });
+                        }
                     });
+                }
             });
         });
 
