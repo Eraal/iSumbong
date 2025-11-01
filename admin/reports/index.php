@@ -52,11 +52,11 @@ if(logged_in()){
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../../img/logo1.png">
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <!-- Font Awesome (CDN) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <!-- DataTables CSS (CDN) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css">
     
     <style>
         .status-pending { background-color: #ffc107; color: white; }
@@ -347,12 +347,16 @@ if(logged_in()){
     </div>
 
     <!-- Scripts -->
-    <script src="../../vendor/jquery/jquery.min.js"></script>
-    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- jQuery (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Bootstrap 4 Bundle (incl. Popper) (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery Easing (CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
     <script src="../../js/sb-admin-2.min.js"></script>
-    <script src="../../vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="../../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <!-- DataTables (CDN) -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
     <script src="../../js/sweetalert2.all.min.js"></script>
 
     <script>
