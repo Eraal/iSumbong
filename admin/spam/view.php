@@ -232,8 +232,8 @@ $suggestion = $row['suggestion'];
 
     <!-- Custom styles for this template-->
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
-    <!-- DataTables CSS via CDN (Bootstrap 4 styling) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.13.8/css/dataTables.bootstrap4.min.css" />
+    <!-- DataTables CSS via official CDN (Bootstrap 4 styling) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap4.min.css" />
     
     <!-- Custom styles for document view -->
     <style>
@@ -987,9 +987,9 @@ $suggestion = $row['suggestion'];
     }
     </script>
     
-    <!-- Page level plugins (DataTables) via CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.13.8/jquery.dataTables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.13.8/dataTables.bootstrap4.min.js"></script>
+    <!-- Page level plugins (DataTables) via official CDN -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
     <script src="../../js/demo/datatables-demo.js"></script>
