@@ -17,18 +17,16 @@ include '../../includes/theme_system.php';
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
 
     <!-- Custom fonts for this template-->
-    <link href="../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <!-- Fallback CDN for Font Awesome in case local fonts fail to load -->
+    <!-- Use CDN for Font Awesome to avoid blocked /vendor path in production -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
     <!-- Custom styles for this template-->
     <script src="../../js/html2canvas.min.js"></script>
     <link href="../../css/sb-admin-2.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../../js/sweetalert2.all.js"></script>
-    <script src="../../js/sweetalert2.css"></script>
-    <script src="../../js/sweetalert2.js"></script>
+    <!-- SweetAlert2: correct CSS link + single all-in-one JS -->
+    <link rel="stylesheet" href="../../js/sweetalert2.min.css">
+    <script src="../../js/sweetalert2.all.min.js"></script>
     <?php echo getThemeMeta(); ?>
     <?php echo getThemeIncludes('../../'); ?>
 </head>
@@ -1098,18 +1096,16 @@ include '../../includes/theme_system.php';
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="../../vendor/jquery/jquery.min.js"></script>
-    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Core JavaScript via CDN to avoid blocked /vendor assets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
     <script src="../../js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../../vendor/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
 <!-- Custom JavaScript for navbar functionality -->
@@ -1174,46 +1170,49 @@ include '../../includes/theme_system.php';
 </script>
 
 <script>
-    // Bar Chart: Monthly Incident Count
-    const ctxBar = document.getElementById('barChart').getContext('2d');
-    new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Incident Count',
-                data: [12, 19, 9, 15, 7, 11, 14, 8, 10, 13, 6, 17], // sample data
-                backgroundColor: '#4e73df',
-                borderColor: '#4e73df',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 5
+    // Initialize charts only if canvas elements exist, after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        const barEl = document.getElementById('barChart');
+        if (barEl && window.Chart) {
+            const ctxBar = barEl.getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Incident Count',
+                        data: [12, 19, 9, 15, 7, 11, 14, 8, 10, 13, 6, 17],
+                        backgroundColor: '#4e73df',
+                        borderColor: '#4e73df',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 5 }
+                        }
                     }
                 }
-            }
+            });
         }
-    });
 
-    // Pie Chart: Incident Type Distribution
-    const ctxPie = document.getElementById('pieChart').getContext('2d');
-    new Chart(ctxPie, {
-        type: 'pie',
-        data: {
-            labels: ['Phishing', 'Malware', 'Unauthorized Access'],
-            datasets: [{
-                data: [40, 25, 35], // sample data
-                backgroundColor: ['#1cc88a', '#36b9cc', '#f6c23e'],
-            }]
-        },
-        options: {
-            responsive: true
+        const pieEl = document.getElementById('pieChart');
+        if (pieEl && window.Chart) {
+            const ctxPie = pieEl.getContext('2d');
+            new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: ['Phishing', 'Malware', 'Unauthorized Access'],
+                    datasets: [{
+                        data: [40, 25, 35],
+                        backgroundColor: ['#1cc88a', '#36b9cc', '#f6c23e'],
+                    }]
+                },
+                options: { responsive: true }
+            });
         }
     });
 </script>
