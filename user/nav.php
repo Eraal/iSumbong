@@ -262,13 +262,6 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="../news/">
-        /* Robust dropdown visibility even without Bootstrap JS */
-        .nav-item.dropdown .dropdown-menu {
-            pointer-events: auto;
-        }
-        .nav-item.dropdown.show > .dropdown-menu {
-            display: block;
-        }
                         <i class="fas fa-newspaper"></i>
                         <span>News</span>
                     </a>
@@ -285,7 +278,6 @@
                     <button class="theme-toggle" onclick="handleThemeToggle(event)" title="Toggle Theme">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
-                    toggle.addEventListener('click', function(e) {
 
                 <!-- User dropdown -->
                 <li class="nav-item dropdown">
@@ -297,14 +289,8 @@
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-custom" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="../incident/">
                             <i class="fas fa-edit text-gray-400 me-2"></i>My Incidents
-                            var willShow = true;
-                            if (parent) {
-                                willShow = !parent.classList.contains('show');
-                                parent.classList.toggle('show');
-                            }
-                            if (menu && menu.classList) menu.classList.toggle('show');
-                            // Maintain ARIA state for accessibility
-                            this.setAttribute('aria-expanded', willShow ? 'true' : 'false');
+                        </a>
+                        <a class="dropdown-item" href="../profile/">
                             <i class="fas fa-user text-gray-400 me-2"></i>Profile
                         </a>
                         <a class="dropdown-item" href="../settings/">
@@ -373,8 +359,13 @@
                         window.jQuery(this).dropdown('toggle');
                     } else {
                         // Fallback toggle
-                        if (parent) parent.classList.toggle('show');
+                        var willShow = true;
+                        if (parent) {
+                            willShow = !parent.classList.contains('show');
+                            parent.classList.toggle('show');
+                        }
                         if (menu && menu.classList) menu.classList.toggle('show');
+                        this.setAttribute('aria-expanded', willShow ? 'true' : 'false');
                     }
                 });
             });
