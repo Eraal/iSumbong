@@ -313,18 +313,8 @@ if (logged_in()) {
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                echo "<tr>";
-                                                echo "<td colspan='4' class='text-center py-5 px-4'>
-                                                <div class='empty-state'>
-                                                    <i class='fas fa-inbox fa-3x text-muted mb-3'></i>
-                                                    <h5 class='text-muted'>No incidents reported yet</h5>
-                                                    <p class='text-muted mb-3'>Get started by reporting your first security incident</p>
-                                                    <a href='register.php' class='btn btn-primary'>
-                                                        <i class='fas fa-plus mr-2'></i>Report First Incident
-                                                    </a>
-                                                </div>
-                                              </td>";
-                                                echo "</tr>";
+                                                // Do not render a colspan row in tbody when using DataTables.
+                                                // DataTables doesn't support colspan/rowspan in tbody and will warn about incorrect column count.
                                             }
                                             ?>
                                         </tbody>
@@ -678,7 +668,10 @@ if (logged_in()) {
         <script>
             $(function() {
                 $("#dataTable").DataTable({
-                    "autoWidth": false,
+                    autoWidth: false,
+                    language: {
+                        emptyTable: "No incidents reported yet. Click 'Report New Incident' to create one."
+                    }
                 });
             });
         </script>
