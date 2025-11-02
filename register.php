@@ -343,6 +343,20 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
                 ]
             ];
         }
+        // If TLS handshake fails due to missing CA bundle or SSL inspection, allow relaxed SSL when enabled in .env
+        if ((function_exists('env') ? env('SMTP_RELAX_SSL', '0') : getenv('SMTP_RELAX_SSL')) === '1') {
+            $existing = is_array($mail->SMTPOptions) ? $mail->SMTPOptions : [];
+            $existing['ssl'] = array_merge($existing['ssl'] ?? [], [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ]);
+            // Prefer TLS1.2 during STARTTLS if available
+            if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
+                $existing['ssl']['crypto_method'] = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+            }
+            $mail->SMTPOptions = $existing;
+        }
         // Optional debug logging to file controlled via .env (SMTP_DEBUG_LOG=1)
         $debugEnabled = (function_exists('env') ? env('SMTP_DEBUG_LOG', '0') : getenv('SMTP_DEBUG_LOG')) === '1';
         if ($debugEnabled) {

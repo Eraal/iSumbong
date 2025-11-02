@@ -39,6 +39,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPSecure = SMTP_ENCRYPTION;
             $mail->Username = SMTP_USERNAME;
             $mail->Password = SMTP_PASSWORD; // App password when using Gmail
+            // Keep mail fast and resilient
+            $mail->Timeout = 15;
+            $mail->SMTPKeepAlive = false;
+            // Optional IPv4 forcing
+            if ((function_exists('env') ? env('SMTP_FORCE_IPV4', '0') : getenv('SMTP_FORCE_IPV4')) === '1') {
+                $resolved = gethostbyname(SMTP_HOST);
+                if (!empty($resolved) && $resolved !== SMTP_HOST) {
+                    $mail->Host = $resolved; // IPv4 address
+                }
+                $mail->SMTPOptions = [
+                    'socket' => [
+                        'bindto' => '0.0.0.0:0',
+                        'tcp_nodelay' => true,
+                    ]
+                ];
+            }
+            // Optional relaxed SSL for tricky environments
+            if ((function_exists('env') ? env('SMTP_RELAX_SSL', '0') : getenv('SMTP_RELAX_SSL')) === '1') {
+                $existing = is_array($mail->SMTPOptions) ? $mail->SMTPOptions : [];
+                $existing['ssl'] = array_merge($existing['ssl'] ?? [], [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true,
+                ]);
+                if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
+                    $existing['ssl']['crypto_method'] = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+                }
+                $mail->SMTPOptions = $existing;
+            }
             $mail->setFrom(FROM_EMAIL, FROM_NAME);
             $mail->addReplyTo(REPLY_TO_EMAIL ?: FROM_EMAIL, FROM_NAME);
             $mail->addAddress($email);

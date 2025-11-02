@@ -84,6 +84,19 @@ if(isset($_POST['test_email'])) {
                 ]
             ];
         }
+        // If TLS handshake fails due to cert validation or SSL inspection, allow relaxed SSL when enabled
+        if ((function_exists('env') ? env('SMTP_RELAX_SSL', '0') : getenv('SMTP_RELAX_SSL')) === '1') {
+            $existing = is_array($mail->SMTPOptions) ? $mail->SMTPOptions : [];
+            $existing['ssl'] = array_merge($existing['ssl'] ?? [], [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ]);
+            if (defined('STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT')) {
+                $existing['ssl']['crypto_method'] = STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
+            }
+            $mail->SMTPOptions = $existing;
+        }
         // Toggle verbose SMTP debug
         // If either URL debug=1 or .env SMTP_DEBUG_LOG=1 is set, enable verbose and write to logs/mail.log
         $debugToFile = (function_exists('env') ? env('SMTP_DEBUG_LOG', '0') : getenv('SMTP_DEBUG_LOG')) === '1';
@@ -119,6 +132,12 @@ if(isset($_POST['test_email'])) {
         
     } catch (Exception $e) {
         echo "<div style='color: red; font-weight: bold;'>❌ Email failed: " . htmlspecialchars($mail->ErrorInfo) . "</div>";
+        // Helpful hint for SendGrid auth
+        if (stripos(SMTP_HOST, 'sendgrid.net') !== false && strtolower(SMTP_USERNAME) !== 'apikey') {
+            echo "<div style='margin-top:8px;padding:10px;border:1px solid #ffeeba;background:#fff3cd;border-radius:6px;color:#856404'>"
+               . "Hint: When using SendGrid SMTP, set SMTP_USERNAME to 'apikey' and SMTP_PASSWORD to your SendGrid API key." 
+               . "</div>";
+        }
     }
 }
 ?>
