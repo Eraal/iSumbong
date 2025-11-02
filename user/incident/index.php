@@ -242,8 +242,23 @@ if (logged_in()) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = "SELECT * FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0) ORDER BY date DESC";
-                                            $result = $conn->query($query);
+                                            // Guard for older databases that may not yet have user_deleted column
+                                            $hasUserDeleted = false;
+                                            if ($colCheck = $conn->query("SHOW COLUMNS FROM incident LIKE 'user_deleted'")) {
+                                                $hasUserDeleted = ($colCheck->num_rows > 0);
+                                                $colCheck->close();
+                                            }
+
+                                            $baseSql = "SELECT * FROM incident WHERE user_id = ?";
+                                            if ($hasUserDeleted) {
+                                                $baseSql .= " AND (user_deleted IS NULL OR user_deleted = 0)";
+                                            }
+                                            $baseSql .= " ORDER BY date DESC";
+
+                                            $stmtList = $conn->prepare($baseSql);
+                                            $stmtList->bind_param("i", $_SESSION['user_id']);
+                                            $stmtList->execute();
+                                            $result = $stmtList->get_result();
 
                                             if ($result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
@@ -316,6 +331,7 @@ if (logged_in()) {
                                                 // Do not render a colspan row in tbody when using DataTables.
                                                 // DataTables doesn't support colspan/rowspan in tbody and will warn about incorrect column count.
                                             }
+                                            if (isset($stmtList) && $stmtList) { $stmtList->close(); }
                                             ?>
                                         </tbody>
                                     </table>
