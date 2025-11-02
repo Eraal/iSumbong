@@ -373,8 +373,9 @@ function sendVerificationEmailPHPMailer($to_email, $name, $token)
         $mail->setFrom(FROM_EMAIL, FROM_NAME);
         // Set envelope sender (Return-Path) for proper bounces and DMARC alignment
         $mail->Sender = FROM_EMAIL;
-        $mail->addAddress($to_email, $name);
-        $mail->addReplyTo(REPLY_TO_EMAIL, FROM_NAME);
+    $mail->addAddress($to_email, $name);
+    // Fall back to FROM_EMAIL when REPLY_TO_EMAIL is unset/empty to avoid PHPMailer "Invalid address (Reply-To)"
+    $mail->addReplyTo(REPLY_TO_EMAIL ?: FROM_EMAIL, FROM_NAME);
 
         // Content
         $mail->isHTML(true);
