@@ -230,6 +230,27 @@ if (logged_in()) {
                                 </div>
                             </div>
                             <div class="card-body">
+                                <?php
+                                // Proactive hint: if user has items classified as spam, notify them
+                                // Only run if `spam` table exists
+                                $spam_table_exists = $conn->query("SHOW TABLES LIKE 'spam'");
+                                if ($spam_table_exists && $spam_table_exists->num_rows > 0) {
+                                    $spam_check = $conn->prepare("SELECT COUNT(*) AS c FROM spam WHERE user_id = ?");
+                                    $spam_check->bind_param("i", $_SESSION['user_id']);
+                                    if ($spam_check->execute()) {
+                                        $spam_res = $spam_check->get_result()->fetch_assoc();
+                                        if (!empty($spam_res['c']) && (int)$spam_res['c'] > 0) {
+                                            echo "<div class='alert alert-warning d-flex align-items-center' role='alert'>
+                                                    <i class='fas fa-exclamation-triangle mr-2'></i>
+                                                    <div>
+                                                        Some of your recent reports may be under review. If you don't see an incident here, it might be temporarily flagged for verification by admins.
+                                                    </div>
+                                                  </div>";
+                                        }
+                                    }
+                                    $spam_check->close();
+                                }
+                                ?>
                                 <div class="table-responsive" id="myDiv">
                                     <table class="table table-hover align-middle" id="dataTable" width="100%" cellspacing="0" style="border-radius: 0.75rem; overflow: hidden;">
                                         <thead class="thead-light">
@@ -242,23 +263,8 @@ if (logged_in()) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Guard for older databases that may not yet have user_deleted column
-                                            $hasUserDeleted = false;
-                                            if ($colCheck = $conn->query("SHOW COLUMNS FROM incident LIKE 'user_deleted'")) {
-                                                $hasUserDeleted = ($colCheck->num_rows > 0);
-                                                $colCheck->close();
-                                            }
-
-                                            $baseSql = "SELECT * FROM incident WHERE user_id = ?";
-                                            if ($hasUserDeleted) {
-                                                $baseSql .= " AND (user_deleted IS NULL OR user_deleted = 0)";
-                                            }
-                                            $baseSql .= " ORDER BY date DESC";
-
-                                            $stmtList = $conn->prepare($baseSql);
-                                            $stmtList->bind_param("i", $_SESSION['user_id']);
-                                            $stmtList->execute();
-                                            $result = $stmtList->get_result();
+                                            $query = "SELECT * FROM incident WHERE user_id = '" . $_SESSION['user_id'] . "' AND (user_deleted IS NULL OR user_deleted = 0) ORDER BY date DESC";
+                                            $result = $conn->query($query);
 
                                             if ($result->num_rows > 0) {
                                                 while ($row = $result->fetch_assoc()) {
@@ -328,10 +334,8 @@ if (logged_in()) {
                                                     echo "</tr>";
                                                 }
                                             } else {
-                                                // Do not render a colspan row in tbody when using DataTables.
-                                                // DataTables doesn't support colspan/rowspan in tbody and will warn about incorrect column count.
+                                                // Leave tbody empty to let DataTables render its built-in empty state
                                             }
-                                            if (isset($stmtList) && $stmtList) { $stmtList->close(); }
                                             ?>
                                         </tbody>
                                     </table>
@@ -686,7 +690,7 @@ if (logged_in()) {
                 $("#dataTable").DataTable({
                     autoWidth: false,
                     language: {
-                        emptyTable: "No incidents reported yet. Click 'Report New Incident' to create one."
+                        emptyTable: "<div class='py-4 text-center'><i class='fas fa-inbox fa-2x text-muted d-block mb-2'></i><div class='text-muted mb-2'>No incidents reported yet</div><a href='register.php' class='btn btn-sm btn-primary'><i class='fas fa-plus mr-1'></i> Report First Incident</a></div>"
                     }
                 });
             });
