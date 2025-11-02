@@ -54,7 +54,7 @@ $role_stats = get_role_stats();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>User Role Management - iReport</title>
+    <title>User Role Management - iSumbong</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png"/>
 
     <!-- Custom fonts for this template -->

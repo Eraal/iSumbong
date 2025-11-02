@@ -9,7 +9,7 @@
                 <div class="sidebar-brand-icon">
                     <img class="fa fas-user img-profile" style="width:70px" src="../../img/logo2.png">
                 </div>
-                <div class="sidebar-brand-text mx-3 text-primary">iReport </div>
+                <div class="sidebar-brand-text mx-3 text-primary">iSumbong</div>
             </a>
 
 

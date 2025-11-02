@@ -96,7 +96,7 @@ if (logged_in()) {
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport - New Incident</title>
+    <title>iSumbong - New Incident</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.jpg" />
     <link rel="icon" type="image/png" sizes="32x32" href="../../img/logo1.jpg">
     <link rel="icon" type="image/png" sizes="16x16" href="../../img/logo1.jpg">

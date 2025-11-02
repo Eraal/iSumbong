@@ -55,7 +55,7 @@ $recent_incidents = $recent_stmt->get_result();
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport - User Profile</title>
+    <title>iSumbong - User Profile</title>
     <link rel="icon" type="image/x-icon" href="../../img/logo1.png" />
     <!-- Font Awesome (CDN to avoid /vendor 403) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />

@@ -221,7 +221,7 @@ $suggestion = $row['suggestion'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>iReport</title>
+    <title>iSumbong</title>
 
     <!-- Custom fonts for this template-->
     <!-- Font Awesome (CDN) only to avoid /vendor 403 in production -->

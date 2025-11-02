@@ -62,14 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
-  <title>iREPORT - Admin Login</title>
+  <title>iSumbong - Admin Login</title>
   <link rel="stylesheet" href="../style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="../js/sweetalert2.all.min.js"></script>
 </head>
 <body>
   <div class="navbar">
-    <div class="logo">🛡️ iREPORT</div>
+  <div class="logo">🛡️ iSumbong</div>
     <div class="nav-link">ADMIN LOGIN</div>
   </div>
 
