@@ -1,6 +1,17 @@
 <?php
 include('connectMySql.php');
 
+// Simple logger to avoid silent 500s in production
+function verify_log($msg) {
+    $logDir = __DIR__ . DIRECTORY_SEPARATOR . 'logs';
+    if (!is_dir($logDir)) {
+        @mkdir($logDir, 0775, true);
+    }
+    $file = $logDir . DIRECTORY_SEPARATOR . 'verify.log';
+    $prefix = '[' . date('Y-m-d H:i:s') . '] ' . ($_SERVER['REMOTE_ADDR'] ?? 'CLI') . ' - ';
+    @file_put_contents($file, $prefix . $msg . "\n", FILE_APPEND);
+}
+
 $message = "";
 $status = "";
 
@@ -12,39 +23,48 @@ if (isset($_GET['token'])) {
         $message = "Invalid verification link.";
         $status = "error";
     } else {
-        // Check if token exists and is not expired using prepared statements
-        $stmt = $conn->prepare("SELECT id FROM users WHERE verification_token = ? AND token_expiry > NOW() AND is_verified = 0 LIMIT 1");
-        $stmt->bind_param('s', $token);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            // Check if token exists and is not expired using prepared statements
+            $stmt = $conn->prepare("SELECT user_id FROM users WHERE verification_token = ? AND token_expiry > NOW() AND is_verified = 0 LIMIT 1");
+            $stmt->bind_param('s', $token);
+            $stmt->execute();
+            // Avoid dependency on mysqlnd get_result(); use store_result/bind_result instead
+            $stmt->store_result();
 
-        if ($row = $result->fetch_assoc()) {
-            // Valid token, verify the user
-            $update = $conn->prepare("UPDATE users SET is_verified = 1, verification_token = NULL, token_expiry = NULL WHERE verification_token = ?");
-            $update->bind_param('s', $token);
-            $update_result = $update->execute();
+            if ($stmt->num_rows > 0) {
+                // Valid token, verify the user
+                $update = $conn->prepare("UPDATE users SET is_verified = 1, verification_token = NULL, token_expiry = NULL WHERE verification_token = ? LIMIT 1");
+                $update->bind_param('s', $token);
+                $update_result = $update->execute();
 
-            if ($update_result) {
-                $message = "Your email has been successfully verified! You can now log in to your account.";
-                $status = "success";
+                if ($update_result && $update->affected_rows === 1) {
+                    $message = "Your email has been successfully verified! You can now log in to your account.";
+                    $status = "success";
+                } else {
+                    verify_log('Update failed or affected_rows != 1 for token=' . substr($token, 0, 8) . '...');
+                    $message = "There was an error verifying your email. Please try again.";
+                    $status = "error";
+                }
             } else {
-                $message = "There was an error verifying your email. Please try again.";
-                $status = "error";
-            }
-        } else {
-            // Check if token is expired
-            $expired = $conn->prepare("SELECT id FROM users WHERE verification_token = ? AND token_expiry <= NOW() LIMIT 1");
-            $expired->bind_param('s', $token);
-            $expired->execute();
-            $expired_result = $expired->get_result();
+                // Check if token exists but expired
+                $expired = $conn->prepare("SELECT user_id FROM users WHERE verification_token = ? AND token_expiry <= NOW() LIMIT 1");
+                $expired->bind_param('s', $token);
+                $expired->execute();
+                $expired->store_result();
 
-            if ($expired_result->fetch_assoc()) {
-                $message = "This verification link has expired. Please register again or request a new verification email.";
-                $status = "warning";
-            } else {
-                $message = "Invalid verification link. Please check your email and try again.";
-                $status = "error";
+                if ($expired->num_rows > 0) {
+                    $message = "This verification link has expired. Please register again or request a new verification email.";
+                    $status = "warning";
+                } else {
+                    $message = "Invalid verification link. Please check your email and try again.";
+                    $status = "error";
+                }
             }
+        } catch (Exception $e) {
+            // Catch mysqli_sql_exception and any other fatal error to avoid HTTP 500
+            verify_log('Verification error: ' . $e->getMessage());
+            $message = "We couldn't process the verification right now. Please try again later or contact support.";
+            $status = "error";
         }
     }
 } else {
