@@ -57,17 +57,13 @@ $current_admin = get_logged_user();
             overflow-x: hidden;
         }
         
-        /* Chart containers */
-        .chart-container {
-            position: relative;
-            height: 400px;
-            width: 100%;
-            margin: 1rem 0;
-        }
-        
-        .chart-container canvas {
-            max-height: 400px !important;
-        }
+    /* Chart containers */
+    .chart-box {
+      position: relative;
+      height: 320px;
+      width: 100%;
+    }
+    .chart-box canvas { height: 100% !important; width: 100% !important; }
         
         /* Card improvements */
         .card {
@@ -91,9 +87,7 @@ $current_admin = get_logged_user();
                 margin-left: 0;
             }
             
-            .chart-container {
-                height: 300px;
-            }
+      .chart-box { height: 280px; }
         }
         
         /* Fix for dashboard cards */
@@ -263,9 +257,11 @@ $current_admin = get_logged_user();
           <i class="fas fa-chart-bar me-1"></i>
           Monthly Incident Count (Jan - Dec)
       </div>
-      <div class="card-body">
-          <canvas id="barChart" width="100%" height="40"></canvas>
+    <div class="card-body">
+      <div class="chart-box">
+        <canvas id="barChart"></canvas>
       </div>
+    </div>
   </div>
 </div>
 <!-- Pie Chart Card -->
@@ -275,9 +271,11 @@ $current_admin = get_logged_user();
           <i class="fas fa-chart-pie me-1"></i>
           Incident Category Distribution
       </div>
-      <div class="card-body">
-          <canvas id="pieChart" width="100%" height="40"></canvas>
+    <div class="card-body">
+      <div class="chart-box">
+        <canvas id="pieChart"></canvas>
       </div>
+    </div>
   </div>
 </div>
 
@@ -393,7 +391,7 @@ $current_admin = get_logged_user();
                 dashboardBarChart.destroy();
             }
             
-            dashboardBarChart = new Chart(ctxBar, {
+      dashboardBarChart = new Chart(ctxBar, {
                 type: 'bar',
                 data: {
                     labels: data.labels,
@@ -406,7 +404,8 @@ $current_admin = get_logged_user();
                     }]
                 },
                 options: {
-                    responsive: true,
+          responsive: true,
+          maintainAspectRatio: false,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -434,7 +433,7 @@ $current_admin = get_logged_user();
                 dashboardPieChart.destroy();
             }
             
-            dashboardPieChart = new Chart(ctxPie, {
+      dashboardPieChart = new Chart(ctxPie, {
                 type: 'pie',
                 data: {
                     labels: data.labels,
@@ -444,7 +443,8 @@ $current_admin = get_logged_user();
                     }]
                 },
                 options: {
-                    responsive: true,
+          responsive: true,
+          maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'bottom'
