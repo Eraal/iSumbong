@@ -60,7 +60,7 @@ $current_admin = get_logged_user();
     /* Chart containers */
     .chart-box {
       position: relative;
-      height: 320px;
+      height: 300px;
       width: 100%;
     }
     .chart-box canvas { height: 100% !important; width: 100% !important; }
@@ -87,7 +87,7 @@ $current_admin = get_logged_user();
                 margin-left: 0;
             }
             
-      .chart-box { height: 280px; }
+            .chart-box { height: 260px; }
         }
         
         /* Fix for dashboard cards */
@@ -440,16 +440,23 @@ $current_admin = get_logged_user();
                     datasets: [{
                         data: data.data,
                         backgroundColor: data.colors,
+            // shrink the visual radius a bit so the pie doesn't feel oversized
+            radius: '75%'
                     }]
                 },
                 options: {
           responsive: true,
           maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
+            legend: {
+              position: 'right',
+              labels: {
+                boxWidth: 12,
+                padding: 12
+              }
+            }
+          },
+          layout: { padding: 0 }
                 }
             });
         } catch (error) {
