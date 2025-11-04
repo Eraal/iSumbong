@@ -97,9 +97,23 @@ if (isset($_POST['btn_verify'])) {
 
             if ($return_var === 0 && file_exists($outputFile . ".txt")) {
                 $extractedText = file_get_contents($outputFile . ".txt");
+                // Normalize whitespace
                 $cleanText = preg_replace('/\s+/', ' ', $extractedText);
+                // Create a punctuation/spacing-insensitive version for matching
+                $normalized = strtolower($extractedText);
+                // Remove punctuation so "Siniloan Laguna" or "Siniloan, Laguna" both match
+                $normalized = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $normalized);
+                $normalized = preg_replace('/\s+/', ' ', $normalized);
 
-                if (stripos($cleanText, "Siniloan, Laguna") !== false) {
+                // Log a small preview for diagnostics (first 200 chars)
+                reg_log('OCR text preview: ' . substr($normalized, 0, 200));
+
+                // Accept if both tokens are present anywhere in the text (order agnostic)
+                $hasSiniloan = (strpos($normalized, 'siniloan') !== false);
+                $hasLaguna   = (strpos($normalized, 'laguna') !== false);
+
+                if ($hasSiniloan && $hasLaguna) {
+                    // Standardize saved value so later validations pass
                     $addressValue = "Siniloan, Laguna";
                     $addressBorder = "border: 2px solid green;";
 

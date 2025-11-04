@@ -78,14 +78,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($return_var === 0 && file_exists($outputFile . ".txt")) {
                 $extractedText = file_get_contents($outputFile . ".txt");
 
-                // Normalize text
-                $cleanText = preg_replace('/\s+/', ' ', $extractedText);
+                // Normalize whitespace and punctuation for robust matching
+                $normalized = strtolower($extractedText);
+                $normalized = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $normalized); // strip punctuation
+                $normalized = preg_replace('/\s+/', ' ', $normalized);
 
-                // Check for "Siniloan, Laguna"
-                if (stripos($cleanText, "Siniloan, Laguna") !== false) {
-                    $status = "✅ Registration Successful (Siniloan, Laguna found)";
+                $hasSiniloan = (strpos($normalized, 'siniloan') !== false);
+                $hasLaguna   = (strpos($normalized, 'laguna') !== false);
+
+                if ($hasSiniloan && $hasLaguna) {
+                    $status = "✅ Registration Successful (found 'Siniloan' and 'Laguna' in OCR text)";
                 } else {
-                    $status = "❌ Registration Failed (Siniloan, Laguna not found)";
+                    $status = "❌ Registration Failed (could not find both 'Siniloan' and 'Laguna' in OCR text)";
                 }
             } else {
                 // Common failure hinting
